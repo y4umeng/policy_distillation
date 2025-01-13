@@ -8,15 +8,18 @@ This repository implements the *Policy Distillation* approach described in the p
 
 ```plaintext
 .
-├── config.py               # Configuration file for hyperparameters and environment settings
-├── train_teacher.py        # Script for training the DQN teacher model
-├── distill_student.py      # Script for distilling the teacher model's policy into a student model
-├── test_teacher.py         # Script for testing the trained teacher model
-├── teacher_network.py      # Implementation of the DQN teacher network
-├── student_network.py      # Implementation of the student network
-├── experience.py           # Replay buffer for storing experience tuples
-├── README.md               # Project documentation (this file)
-└── requirements.txt        # List of required Python libraries
+├── src
+│   ├── config.py               # Configuration file for hyperparameters and environment settings
+│   ├── distill_student.py      # Script for distilling the teacher model's policy into a student model
+│   ├── experience.py           # Replay buffer for storing experience tuples
+│   ├── main.py                 # Entry point to train and distill models
+│   ├── multi_task_distill.py   # Optional script for multi-task policy distillation
+│   ├── student_network.py      # Implementation of the student network
+│   ├── teacher_network.py      # Implementation of the DQN teacher network
+│   ├── train_teacher.py        # Script for training the DQN teacher model
+│   └── validate.py             # Script for testing trained models
+├── README.md                   # Project documentation (this file)
+└── requirements.txt            # List of required Python libraries
 ```
 
 ---
