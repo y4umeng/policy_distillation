@@ -6,7 +6,7 @@ import numpy as np
 
 from config import Config
 from teacher_network import DQN
-from student_network import StudentPolicy
+from student_network import StudentNet1
 from experience import ReplayBuffer
 from train_teacher import preprocess_env
 
@@ -65,7 +65,7 @@ def distill_student(env_id=Config.ENV_ID):
     num_actions = env.action_space.n
     env.close()
 
-    student_net = StudentPolicy(in_channels=Config.FRAME_STACK, num_actions=num_actions).to(Config.DEVICE)
+    student_net = StudentNet1(in_channels=Config.FRAME_STACK, num_actions=num_actions).to(Config.DEVICE)
     optimizer = optim.Adam(student_net.parameters(), lr=Config.STUDENT_LR)
 
     for epoch in range(Config.STUDENT_EPOCHS):

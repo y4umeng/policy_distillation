@@ -9,7 +9,7 @@ if __name__ == "__main__":
     gym.register_envs(ale_py)
 
     # 1) Train the teacher DQN
-    train_teacher()  # Will save "teacher_dqn.pth"
+    # train_teacher()  # Will save "teacher_dqn.pth"
 
     # 2) Distill the student policy
     distill_student()  # Will save "student_policy.pth"
