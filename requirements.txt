@@ -1,0 +1,4 @@
+ale-py==0.10.1
+gymnasium==1.0.0
+torch==2.5.1
+tqdm==4.67.1
