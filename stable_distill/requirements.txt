@@ -1,0 +1,12 @@
+torch>=1.9
+gym>=0.21
+stable-baselines3>=1.7.0
+pyyaml>=6.0
+numpy>=1.21
+
+# Optional, if you want to log experiment runs
+# wandb>=0.12
+
+# If you plan to do visualizations or debugging
+# matplotlib>=3.3
+# ipython
