@@ -3,14 +3,19 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
-
+from scipy.special import softmax
+import sys
 from config import Config
 from teacher_network import DQN
 from student_network import StudentNet1
 from experience import ReplayBuffer
 from train_teacher import preprocess_env
+from rl_zoo3 import ALGOS
+from rl_zoo3.load_from_hub import download_from_hub
+from rl_zoo3.utils import StoreDict, get_model_path
+from stable_baselines3 import DQN
 
-def generate_distillation_data(env_id=Config.ENV_ID, num_samples=50_000):
+def generate_distillation_data(env_id=Config.ENV_ID, num_samples=1000):
     """
     Roll out the teacher's policy to collect states and 
     teacher's action distribution (softmax over Q-values).
@@ -19,9 +24,21 @@ def generate_distillation_data(env_id=Config.ENV_ID, num_samples=50_000):
     num_actions = env.action_space.n
 
     # Load the teacher
-    teacher_net = DQN(in_channels=Config.FRAME_STACK, num_actions=num_actions).to(Config.DEVICE)
-    teacher_net.load_state_dict(torch.load("teacher_dqn.pth", map_location=Config.DEVICE))
-    teacher_net.eval()
+
+    algo = "dqn"
+    env_name = "BreakoutNoFrameskip-v4"
+    exp_id = 0
+    folder = "rl-trained-agents"
+    org = "sb3"
+
+    _, model_path, log_path = get_model_path(
+        exp_id,
+        folder,
+        algo,
+        env_name
+    )
+
+    teacher_net = DQN.load(model_path).policy.q_net
 
     distill_buffer = ReplayBuffer(capacity=num_samples)
 
@@ -32,9 +49,9 @@ def generate_distillation_data(env_id=Config.ENV_ID, num_samples=50_000):
         state_v = torch.tensor(state, dtype=torch.float32).unsqueeze(0).to(Config.DEVICE)
         with torch.no_grad():
             q_vals = teacher_net(state_v)  # shape [1, num_actions]
-            policy_dist = F.softmax(q_vals / Config.STUDENT_ALPHA, dim=1).cpu().numpy()[0]
+            policy_dist = torch.softmax(q_vals, dim=0)
 
-        teacher_action = np.argmax(policy_dist)
+        teacher_action = torch.argmax(policy_dist)
 
         next_state, reward, terminated, truncated, _ = env.step(teacher_action)
         done = terminated or truncated
