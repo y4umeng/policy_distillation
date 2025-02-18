@@ -1,0 +1,46 @@
+{
+  "os":  "Linux-6.8.0-52-generic-x86_64-with-glibc2.39",
+  "python":  "CPython 3.12.3",
+  "startedAt":  "2025-02-18T22:13:40.601750Z",
+  "args":  [
+    "--cfg",
+    "configs/BreakoutNoFrameskip-v4/dqn.yaml"
+  ],
+  "program":  "/home/yw3809/Projects/policy_distillation/src/tools/train.py",
+  "codePath":  "src/tools/train.py",
+  "git":  {
+    "remote":  "https://github.com/y4umeng/policy_distillation.git",
+    "commit":  "3c33f434840900df7a9e6f27b57d69630d2eb2e6"
+  },
+  "email":  "yw3809@columbia.edu",
+  "root":  "/home/yw3809/Projects/policy_distillation/src",
+  "host":  "cml88",
+  "executable":  "/home/yw3809/Projects/policy_distillation/.venv/bin/python",
+  "codePathLocal":  "tools/train.py",
+  "cpu_count":  24,
+  "cpu_count_logical":  32,
+  "gpu":  "NVIDIA GeForce RTX 4090",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "1966736678912",
+      "used":  "207053664256"
+    }
+  },
+  "memory":  {
+    "total":  "33487237120"
+  },
+  "cpu":  {
+    "count":  24,
+    "countLogical":  32
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce RTX 4090",
+      "memoryTotal":  "25757220864",
+      "cudaCores":  16384,
+      "architecture":  "Ada"
+    }
+  ],
+  "cudaVersion":  "12.4"
+}

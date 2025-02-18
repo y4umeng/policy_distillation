@@ -6,10 +6,9 @@ import numpy as np
 from scipy.special import softmax
 import sys
 from config import Config
-from teacher_network import DQN
 from student_network import StudentNet1
-from experience import ReplayBuffer
-from train_teacher import preprocess_env
+from engine.experience import ReplayBuffer
+from utils import preprocess_env, get_logger
 from rl_zoo3 import ALGOS
 from rl_zoo3.load_from_hub import download_from_hub
 from rl_zoo3.utils import StoreDict, get_model_path

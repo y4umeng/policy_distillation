@@ -17,6 +17,17 @@ from rl_zoo3.utils import StoreDict, get_model_path
 import torch.nn as nn
 from stable_baselines3 import PPO, DQN
 
+def get_qnet(algo = "dqn", env_name = "BreakoutNoFrameskip-v4", exp_id = 0, folder = "rl-trained-agents"):
+    _, model_path, log_path = get_model_path(
+        exp_id,
+        folder,
+        algo,
+        env_name
+    )
+
+    return DQN.load(model_path).policy.q_net
+
+
 def load() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--env", help="environment ID", type=EnvironmentName, default="CartPole-v1")

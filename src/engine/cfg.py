@@ -1,0 +1,54 @@
+from yacs.config import CfgNode as CN
+from .utils import log_msg
+
+
+def show_cfg(cfg):
+    dump_cfg = CN()
+    dump_cfg.EXPERIMENT = cfg.EXPERIMENT
+    dump_cfg.REPLAY_BUFFER = cfg.REPLAY_BUFFER
+    dump_cfg.DISTILLER = cfg.DISTILLER
+    dump_cfg.SOLVER = cfg.SOLVER
+    dump_cfg.LOG = cfg.LOG
+    print(log_msg("CONFIG:\n{}".format(dump_cfg.dump()), "INFO"))
+
+
+CFG = CN()
+
+# Experiment
+CFG.EXPERIMENT = CN()
+CFG.EXPERIMENT.PROJECT = "distill"
+CFG.EXPERIMENT.NAME = ""
+CFG.EXPERIMENT.TAG = "default"
+CFG.EXPERIMENT.DEVICE = "cuda"
+
+# RL 
+
+CFG.DISTILLER = CN()
+CFG.DISTILLER.TYPE = "NONE"
+CFG.DISTILLER.TEACHER = "dqn"
+CFG.DISTILLER.STUDENT = "dqn"
+CFG.DISTILLER.ENV = "BreakoutNoFrameskip-v4"
+
+# Solver
+CFG.SOLVER = CN()
+CFG.SOLVER.TRAINER = "base"
+CFG.SOLVER.BATCH_SIZE = 64
+CFG.SOLVER.EPOCHS = 240
+CFG.SOLVER.LR = 0.05
+CFG.SOLVER.LR_DECAY_STAGES = [150, 180, 210]
+CFG.SOLVER.LR_DECAY_RATE = 0.1
+CFG.SOLVER.WEIGHT_DECAY = 0.0001
+CFG.SOLVER.MOMENTUM = 0.9
+CFG.SOLVER.TYPE = "SGD"
+
+# Replay Buffer
+CFG.REPLAY_BUFFER = CN()
+CFG.REPLAY_BUFFER.MAX_CAPACITY = 200000
+CFG.REPLAY_BUFFER.INCREMENT_SIZE = 50000
+
+
+# Log
+CFG.LOG = CN()
+CFG.LOG.SAVE_CHECKPOINT_FREQ = 10
+CFG.LOG.PREFIX = "./output"
+CFG.LOG.WANDB = True
