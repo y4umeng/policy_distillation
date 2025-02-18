@@ -173,3 +173,5 @@ cython_debug/
 # Custom
 *.pth
 rl-trained-agents/
+output/
+src/output/
