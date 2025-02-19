@@ -23,8 +23,9 @@ class BaseTrainer(object):
         self.env = env
         self.teacher = teacher
         self.distiller = distiller
-        self.replay_buffer = ReplayBufferDataset(cfg.REPLAY_BUFFER.MAX_CAPACITY)
+        self.replay_buffer = ReplayBufferDataset(cfg.DATA.MAX_CAPACITY)
         self.optimizer = self.init_optimizer(cfg)
+        self.num_actions = self.env.action_space.n
         self.best_score = -1
 
         # init loggers
@@ -59,9 +60,19 @@ class BaseTrainer(object):
         self.teacher.eval()
         state, _ = self.env.reset()
         collected = 0
-        pbar = tqdm(range(self.cfg.REPLAY_BUFFER.INCREMENT_SIZE))
-        while collected < self.cfg.REPLAY_BUFFER.INCREMENT_SIZE:
+        if self.cfg.LOG.BAR: pbar = tqdm(range(self.cfg.DATA.INCREMENT_SIZE))
+        while collected < self.cfg.DATA.INCREMENT_SIZE:
             state_v = torch.tensor(state, dtype=torch.float32, device="cuda").squeeze().unsqueeze(0)
+            if torch.rand(1) < self.cfg.DATA.EXPLORATION_RATE:
+                teacher_action = torch.randint(self.num_actions, size=(1,))
+                next_state, reward, terminated, truncated, _ = self.env.step(teacher_action)
+                done = terminated or truncated
+                if done:
+                    state, _ = self.env.reset()
+                else: 
+                    state = next_state
+                continue
+
             with torch.no_grad():
                 q_vals = self.teacher(state_v)
                 policy_dist = torch.softmax(q_vals, dim=0)
@@ -84,9 +95,9 @@ class BaseTrainer(object):
             if done:
                 state, _ = self.env.reset()
             if self.cfg.LOG.BAR:
-                pbar.set_description(log_msg("Generating data.", f"EVAL"))
+                pbar.set_description(log_msg("Generating data.", f"TRAIN"))
                 pbar.update()
-        pbar.close()
+        if self.cfg.LOG.BAR: pbar.close()
         self.replay_buffer.check_capacity()
 
     def train(self, resume=False):
@@ -112,7 +123,7 @@ class BaseTrainer(object):
             "top5": AverageMeter(),
         }
         num_iter = ceil(len(self.replay_buffer)/self.cfg.SOLVER.BATCH_SIZE)
-        pbar = tqdm(range(num_iter))
+        if self.cfg.LOG.BAR: pbar = tqdm(range(num_iter))
 
         self.generate_data()
 
@@ -129,11 +140,10 @@ class BaseTrainer(object):
             if self.cfg.LOG.BAR:
                 pbar.set_description(log_msg(msg, "TRAIN"))
                 pbar.update()
-        pbar.close()
+        if self.cfg.LOG.BAR: pbar.close()
 
         # validate
         total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR)
-        print(f"EVAL: {total_score} reward.")
 
         # log
         log_dict = OrderedDict(

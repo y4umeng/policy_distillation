@@ -27,8 +27,6 @@ def test_teacher(model_path, env_name, num_episodes=5, seed=121):
     # old env
     env = preprocess_env(env_name)
 
-    num_actions = env.action_space.n
-
     # Load the trained model
     # model = DQN(in_channels=4, num_actions=num_actions)
     # model.load_state_dict(torch.load(model_path, map_location=torch.device("cpu")))

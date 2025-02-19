@@ -5,7 +5,7 @@ from .utils import log_msg
 def show_cfg(cfg):
     dump_cfg = CN()
     dump_cfg.EXPERIMENT = cfg.EXPERIMENT
-    dump_cfg.REPLAY_BUFFER = cfg.REPLAY_BUFFER
+    dump_cfg.DATA = cfg.DATA
     dump_cfg.DISTILLER = cfg.DISTILLER
     dump_cfg.SOLVER = cfg.SOLVER
     dump_cfg.LOG = cfg.LOG
@@ -41,10 +41,12 @@ CFG.SOLVER.WEIGHT_DECAY = 0.0001
 CFG.SOLVER.MOMENTUM = 0.9
 CFG.SOLVER.TYPE = "SGD"
 
-# Replay Buffer
-CFG.REPLAY_BUFFER = CN()
-CFG.REPLAY_BUFFER.MAX_CAPACITY = 540000
-CFG.REPLAY_BUFFER.INCREMENT_SIZE = 54000
+# Data
+CFG.DATA = CN()
+CFG.DATA.MAX_CAPACITY = 216000
+CFG.DATA.INCREMENT_SIZE = 54000
+CFG.DATA.EXPLORATION_RATE = 0.05
+
 
 # Log
 CFG.LOG = CN()
