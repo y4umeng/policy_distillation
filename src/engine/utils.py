@@ -4,9 +4,11 @@ import copy
 import numpy as np
 from stable_baselines3.common.atari_wrappers import AtariWrapper
 from gymnasium.wrappers import FrameStackObservation
+from tqdm import tqdm
 
-def validate(distiller, env, num_episodes=100):
+def validate(distiller, env, num_episodes=100, bar=True):
     total_reward = 0
+    pbar = tqdm(range(num_episodes))
     for episode in range(num_episodes):
         state, _ = env.reset()
         episode_reward = 0
@@ -25,6 +27,10 @@ def validate(distiller, env, num_episodes=100):
             episode_reward += reward
             state = next_state
         total_reward += episode_reward
+        if bar:
+            pbar.set_description(log_msg(f"Episode score: {episode_reward}", "EVAL"))
+            pbar.update()
+    pbar.close()
     return total_reward
 
 def preprocess_env(env_name):

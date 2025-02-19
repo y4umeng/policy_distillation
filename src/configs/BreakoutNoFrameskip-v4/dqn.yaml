@@ -1,8 +1,5 @@
 EXPERIMENT:
   TAG: "breakout, dqn"
   PROJECT: "policy_distillation_tests"
-REPLAY_BUFFER:
-  MAX_CAPACITY: 1000000
-  INCREMENT_SIZE: 50000
 LOG:
   WANDB: False

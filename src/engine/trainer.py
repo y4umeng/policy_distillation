@@ -2,6 +2,7 @@ import os
 import time
 from tqdm import tqdm
 import torch
+from math import ceil
 import torch.optim as optim
 from collections import OrderedDict
 from .utils import (
@@ -55,9 +56,10 @@ class BaseTrainer(object):
                 wandb.run.summary["best_score"] = self.best_score
 
     def generate_data(self):
+        self.teacher.eval()
         state, _ = self.env.reset()
         collected = 0
-
+        pbar = tqdm(range(self.cfg.REPLAY_BUFFER.INCREMENT_SIZE))
         while collected < self.cfg.REPLAY_BUFFER.INCREMENT_SIZE:
             state_v = torch.tensor(state, dtype=torch.float32, device="cuda").squeeze().unsqueeze(0)
             with torch.no_grad():
@@ -71,9 +73,9 @@ class BaseTrainer(object):
 
             # Store in buffer
             self.replay_buffer.push(
-                state_v.squeeze(),
-                teacher_action,
-                policy_dist
+                state_v.squeeze().cpu(),
+                teacher_action.cpu(),
+                policy_dist.cpu()
             )
 
             state = next_state
@@ -81,7 +83,11 @@ class BaseTrainer(object):
 
             if done:
                 state, _ = self.env.reset()
-        print("Generated some data.")
+            if self.cfg.LOG.BAR:
+                pbar.set_description(log_msg("Generating data.", f"EVAL"))
+                pbar.update()
+        pbar.close()
+        self.replay_buffer.check_capacity()
 
     def train(self, resume=False):
         epoch = 1
@@ -105,7 +111,7 @@ class BaseTrainer(object):
             "top1": AverageMeter(),
             "top5": AverageMeter(),
         }
-        num_iter = len(self.replay_buffer)
+        num_iter = ceil(len(self.replay_buffer)/self.cfg.SOLVER.BATCH_SIZE)
         pbar = tqdm(range(num_iter))
 
         self.generate_data()
@@ -114,19 +120,20 @@ class BaseTrainer(object):
             self.replay_buffer,
             batch_size=self.cfg.SOLVER.BATCH_SIZE,
             shuffle=True,
-            # collate_fn=replay_collate_fn
         )
 
         # train loops
         self.distiller.train()
         for idx, data in enumerate(data_loader):
             msg = self.train_iter(data, epoch, train_meters)
-            pbar.set_description(log_msg(msg, "TRAIN"))
-            pbar.update()
+            if self.cfg.LOG.BAR:
+                pbar.set_description(log_msg(msg, "TRAIN"))
+                pbar.update()
         pbar.close()
 
         # validate
-        total_score = validate(self.distiller, self.env)
+        total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR)
+        print(f"EVAL: {total_score} reward.")
 
         # log
         log_dict = OrderedDict(

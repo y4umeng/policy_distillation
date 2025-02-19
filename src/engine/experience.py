@@ -14,8 +14,13 @@ class ReplayBufferDataset(Dataset):
         """
         Add a new action to the buffer.
         """
-        if len(self.buffer) < self.capacity:
-            self.buffer.append((state, action, teacher_probs.squeeze()))
+        self.buffer.append((state, action, teacher_probs.squeeze()))
+
+    def check_capacity(self):
+        if len(self.buffer) > self.capacity:
+            self.buffer = self.buffer[-self.capacity:]
+            return True
+        return False
 
     def __len__(self):
         return len(self.buffer)
