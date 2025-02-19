@@ -11,8 +11,8 @@ class Distiller(nn.Module):
 
     def forward_train(self, image, target, **kwargs):
         logits_student = self.student(image)
-        loss = F.mse_loss(logits_student, target)
-        return logits_student, {"mse": loss}
+        loss = nn.KLDivLoss(logits_student, target)
+        return logits_student, {"kld": loss}
 
     def forward(self, **kwargs):
         if self.training:
