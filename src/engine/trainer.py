@@ -75,7 +75,8 @@ class BaseTrainer(object):
 
             with torch.no_grad():
                 q_vals = self.teacher(state_v)
-                policy_dist = torch.softmax(q_vals, dim=0)
+                q_vals /= self.cfg.SOLVER.TEACHER_SOFTMAX_TEMP
+                policy_dist = torch.softmax(q_vals, dim=1)
 
             teacher_action = torch.argmax(policy_dist)
 

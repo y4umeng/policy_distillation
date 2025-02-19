@@ -1,10 +1,12 @@
 import argparse
+import os
 import gymnasium as gym
 import ale_py
 from rl_zoo3.utils import get_model_path
 from stable_baselines3 import DQN
+from stable_baselines3.dqn.policies import CnnPolicy, DQNPolicy, MlpPolicy, MultiInputPolicy, QNetwork
 from src.distillers._base import Distiller
-from src.engine.utils import validate, preprocess_env
+from src.engine.utils import validate, preprocess_env, load_checkpoint
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -24,6 +26,11 @@ if __name__ == "__main__":
         model = DQN.load(model_path).policy.q_net
         distiller = Distiller(model)
     else:
+        # if args.model == "dqn":
+        #     state = load_checkpoint(args.ckpt)
+        #     distiller = Distiller(student=QNetwork())
+        #     distiller.load_state_dict(state["model"])
+        # else:
         raise NotImplementedError()
     
     gym.register_envs(ale_py)

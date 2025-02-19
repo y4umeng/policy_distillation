@@ -2,5 +2,5 @@ EXPERIMENT:
   TAG: "breakout, dqn"
   PROJECT: "policy_distillation_tests"
 LOG:
-  WANDB: True
-  BAR: False
+  WANDB: False
+  BAR: True
