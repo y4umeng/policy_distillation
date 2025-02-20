@@ -63,7 +63,7 @@ class BaseTrainer(object):
         time_start = time.time()
         if self.cfg.LOG.BAR: pbar = tqdm(range(self.cfg.DATA.INCREMENT_SIZE))
         while collected < self.cfg.DATA.INCREMENT_SIZE:
-            state_v = torch.tensor(state, dtype=torch.float32, device="cuda").squeeze().unsqueeze(0)
+            state_v = torch.tensor(state, dtype=torch.float16, device="cuda").squeeze().unsqueeze(0)
             if torch.rand(1) < self.cfg.DATA.EXPLORATION_RATE:
                 teacher_action = torch.randint(self.num_actions, size=(1,))
                 next_state, reward, terminated, truncated, _ = self.env.step(teacher_action)

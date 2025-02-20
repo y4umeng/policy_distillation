@@ -1,0 +1,9 @@
+EXPERIMENT:
+  NAME: "Breakout/DQN/PD"
+  TAG: "breakout, dqn, PD"
+  PROJECT: "policy_distillation_baselines"
+LOG:
+  WANDB: False
+  BAR: True
+DISTILLER:
+  TYPE: "PD"
