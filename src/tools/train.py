@@ -9,7 +9,7 @@ import gymnasium as gym
 import ale_py
 from rl_zoo3.utils import get_model_path
 from stable_baselines3 import DQN
-from src.distillers._base import Distiller
+from src.distillers import distiller_dict
 from src.engine.utils import reinitialize_model_weights, preprocess_env
 from src.engine.cfg import CFG as cfg
 from src.engine import trainer_dict
@@ -42,8 +42,7 @@ def main(cfg, resume, opts):
     env = preprocess_env(cfg.DISTILLER.ENV)
 
     # init models
-    if cfg.DISTILLER.TYPE == "NONE":
-
+    if cfg.DISTILLER.TYPE in distiller_dict:
         # load teacher
         _, model_path, _ = get_model_path(
             0,
@@ -60,7 +59,7 @@ def main(cfg, resume, opts):
         # student
         if cfg.DISTILLER.STUDENT == "dqn":
             student = reinitialize_model_weights(teacher)
-            distiller = Distiller(student)
+            distiller = distiller_dict[cfg.DISTILLER.TYPE](student, teacher, cfg)
         else:
             raise NotImplementedError()
     else:
@@ -68,7 +67,7 @@ def main(cfg, resume, opts):
 
     # train
     trainer = trainer_dict[cfg.SOLVER.TRAINER](
-        experiment_name, teacher, distiller, env, cfg
+        experiment_name, distiller, env, cfg
     )
     trainer.train(resume=resume)
 

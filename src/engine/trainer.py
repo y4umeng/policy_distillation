@@ -2,6 +2,7 @@ import os
 import time
 from tqdm import tqdm
 import torch
+import wandb
 from math import ceil
 import torch.optim as optim
 from collections import OrderedDict
@@ -18,10 +19,9 @@ from .experience import ReplayBufferDataset
 from torch.utils.data import DataLoader
 
 class BaseTrainer(object):
-    def __init__(self, experiment_name, teacher, distiller, env, cfg):
+    def __init__(self, experiment_name, distiller, env, cfg):
         self.cfg = cfg
         self.env = env
-        self.teacher = teacher
         self.distiller = distiller
         self.replay_buffer = ReplayBufferDataset(cfg.DATA.MAX_CAPACITY)
         self.optimizer = self.init_optimizer(cfg)
@@ -47,19 +47,20 @@ class BaseTrainer(object):
 
     def log(self, lr, epoch, log_dict):
         # wandb log
-        if self.cfg.LOG.WANDB:
-            import wandb
-            wandb.log({"current lr": lr})
-            wandb.log(log_dict)
         if log_dict["test_score"] > self.best_score:
             self.best_score = log_dict["test_score"]
             if self.cfg.LOG.WANDB:
                 wandb.run.summary["best_score"] = self.best_score
+        if self.cfg.LOG.WANDB:
+            log_dict["current lr"] = lr
+            log_dict["best_score"] = self.best_score
+            wandb.log(log_dict)
 
     def generate_data(self):
-        self.teacher.eval()
+        self.distiller.teacher.eval()
         state, _ = self.env.reset()
         collected = 0
+        time_start = time.time()
         if self.cfg.LOG.BAR: pbar = tqdm(range(self.cfg.DATA.INCREMENT_SIZE))
         while collected < self.cfg.DATA.INCREMENT_SIZE:
             state_v = torch.tensor(state, dtype=torch.float32, device="cuda").squeeze().unsqueeze(0)
@@ -74,9 +75,7 @@ class BaseTrainer(object):
                 continue
 
             with torch.no_grad():
-                q_vals = self.teacher(state_v)
-                q_vals /= self.cfg.SOLVER.TEACHER_SOFTMAX_TEMP
-                policy_dist = torch.softmax(q_vals, dim=1)
+                policy_dist = self.distiller.teacher(state_v)
 
             teacher_action = torch.argmax(policy_dist)
 
@@ -100,6 +99,7 @@ class BaseTrainer(object):
                 pbar.update()
         if self.cfg.LOG.BAR: pbar.close()
         self.replay_buffer.check_capacity()
+        return time.time() - time_start
 
     def train(self, resume=False):
         epoch = 1
@@ -124,15 +124,16 @@ class BaseTrainer(object):
             "top5": AverageMeter(),
         }
         num_iter = ceil(len(self.replay_buffer)/self.cfg.SOLVER.BATCH_SIZE)
-        if self.cfg.LOG.BAR: pbar = tqdm(range(num_iter))
 
-        self.generate_data()
+        generatation_time = self.generate_data()
 
         data_loader = DataLoader(
             self.replay_buffer,
             batch_size=self.cfg.SOLVER.BATCH_SIZE,
             shuffle=True,
         )
+
+        if self.cfg.LOG.BAR: pbar = tqdm(range(num_iter))
 
         # train loops
         self.distiller.train()
@@ -144,7 +145,9 @@ class BaseTrainer(object):
         if self.cfg.LOG.BAR: pbar.close()
 
         # validate
+        eval_start = time.time()
         total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR)
+        eval_time = time.time() - eval_start
 
         # log
         log_dict = OrderedDict(
@@ -152,7 +155,11 @@ class BaseTrainer(object):
                 "train_acc": train_meters["top1"].avg,
                 "train_loss": train_meters["losses"].avg,
                 "test_score": total_score,
-                "data_points": len(self.replay_buffer)
+                "data_points": len(self.replay_buffer),
+                "total_data_gen_time": generatation_time,
+                "train_time": train_meters["training_time"].avg,
+                "data_load_time": train_meters["data_time"].avg,
+                "total_eval_time": eval_time
             }
         )
         self.log(lr, epoch, log_dict)
