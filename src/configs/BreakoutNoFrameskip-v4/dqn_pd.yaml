@@ -3,7 +3,7 @@ EXPERIMENT:
   TAG: "breakout, dqn, PD"
   PROJECT: "policy_distillation_baselines"
 LOG:
-  WANDB: False
-  BAR: True
+  WANDB: True
+  BAR: False
 DISTILLER:
   TYPE: "PD"

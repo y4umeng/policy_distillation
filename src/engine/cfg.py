@@ -9,6 +9,7 @@ def show_cfg(cfg):
     dump_cfg.DISTILLER = cfg.DISTILLER
     dump_cfg.SOLVER = cfg.SOLVER
     dump_cfg.LOG = cfg.LOG
+    dump_cfg.DA = cfg.DA
     print(log_msg("CONFIG:\n{}".format(dump_cfg.dump()), "INFO"))
 
 
@@ -52,6 +53,13 @@ CFG.DATA.EXPLORATION_RATE = 0.05
 # Log
 CFG.LOG = CN()
 CFG.LOG.SAVE_CHECKPOINT_FREQ = 250
+CFG.LOG.EVAL_FREQ = 25
 CFG.LOG.PREFIX = "./output"
 CFG.LOG.WANDB = True
 CFG.LOG.BAR = True
+
+# DA
+CFG.DA = CN()
+CFG.DA.LR = 0.01778
+CFG.DA.EPOCHS = 1
+CFG.DA.PROB = 0.7374

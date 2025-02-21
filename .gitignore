@@ -178,3 +178,4 @@ src/output/
 *.out
 wandb/
 src/wandb/
+logs/

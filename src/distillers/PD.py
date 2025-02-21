@@ -1,14 +1,15 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from ._base import Distiller
 
 class PD(Distiller):
+    def kld_with_temp(self, student_logits, teacher_logits):
+        teacher_logits /= self.cfg.SOLVER.SOFTMAX_TEMP
+        teacher_logits = torch.softmax(teacher_logits, dim=1)
+        student_logits /= self.cfg.SOLVER.SOFTMAX_TEMP
+        student_logits = torch.softmax(student_logits, dim=1)
+        return F.kl_div(student_logits.log(), teacher_logits, reduction='batchmean')
     def forward_train(self, image, target, **kwargs):
-        target /= self.cfg.SOLVER.SOFTMAX_TEMP
-        target = torch.softmax(target, dim=1)
         logits_student = self.student(image)
-        logits_student /= self.cfg.SOLVER.SOFTMAX_TEMP
-        logits_student = torch.softmax(logits_student, dim=1)
-        loss = loss = F.kl_div(logits_student.log(), target, reduction='batchmean')
+        loss = self.kld_with_temp(logits_student, target)
         return logits_student, {"kld": loss}

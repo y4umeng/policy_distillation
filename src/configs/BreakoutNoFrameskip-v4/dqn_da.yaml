@@ -1,0 +1,13 @@
+EXPERIMENT:
+  NAME: "Breakout/DQN/DA"
+  TAG: "breakout, dqn, DA"
+  PROJECT: "policy_distillation_da_tests"
+LOG:
+  WANDB: True
+  BAR: False
+DISTILLER:
+  TYPE: "DA"
+DA:
+  LR: 0.000192
+  EPOCHS: 1
+  PROB: 0.1

@@ -47,7 +47,7 @@ class BaseTrainer(object):
 
     def log(self, lr, epoch, log_dict):
         # wandb log
-        if log_dict["test_score"] > self.best_score:
+        if "test_score" in log_dict and log_dict["test_score"] > self.best_score:
             self.best_score = log_dict["test_score"]
             if self.cfg.LOG.WANDB:
                 wandb.run.summary["best_score"] = self.best_score
@@ -144,25 +144,18 @@ class BaseTrainer(object):
                 pbar.update()
         if self.cfg.LOG.BAR: pbar.close()
 
-        # validate
-        eval_start = time.time()
-        total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR)
-        eval_time = time.time() - eval_start
-
         # log
         log_dict = OrderedDict(
             {
                 "train_acc": train_meters["top1"].avg,
                 "train_loss": train_meters["losses"].avg,
-                "test_score": total_score,
                 "data_points": len(self.replay_buffer),
                 "total_data_gen_time": generatation_time,
                 "train_time": train_meters["training_time"].avg,
                 "data_load_time": train_meters["data_time"].avg,
-                "total_eval_time": eval_time
             }
         )
-        self.log(lr, epoch, log_dict)
+
         # saving checkpoint
         state = {
             "epoch": epoch,
@@ -183,12 +176,22 @@ class BaseTrainer(object):
                 student_state,
                 os.path.join(self.log_path, "student_{}".format(epoch)),
             )
-        # update the best
-        if total_score >= self.best_score:
-            save_checkpoint(state, os.path.join(self.log_path, "best"))
-            save_checkpoint(
-                student_state, os.path.join(self.log_path, "student_best")
-            )
+
+        if epoch % self.cfg.LOG.EVAL_FREQ == 0:
+            # validate
+            eval_start = time.time()
+            total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR)
+            eval_time = time.time() - eval_start
+            log_dict["total_eval_time"] = eval_time
+            log_dict["test_score"] = total_score
+            # update the best
+            if total_score >= self.best_score:
+                save_checkpoint(state, os.path.join(self.log_path, "best"))
+                save_checkpoint(
+                    student_state, os.path.join(self.log_path, "student_best")
+                )
+
+        self.log(lr, epoch, log_dict)
 
     def train_iter(self, data, epoch, train_meters):
         self.optimizer.zero_grad()
