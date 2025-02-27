@@ -179,3 +179,4 @@ src/output/
 wandb/
 src/wandb/
 logs/
+test/

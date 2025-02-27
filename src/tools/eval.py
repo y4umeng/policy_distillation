@@ -4,9 +4,10 @@ import gymnasium as gym
 import ale_py
 from rl_zoo3.utils import get_model_path
 from stable_baselines3 import DQN
-from stable_baselines3.dqn.policies import CnnPolicy, DQNPolicy, MlpPolicy, MultiInputPolicy, QNetwork
-from src.distillers._base import Distiller
+# from stable_baselines3.dqn.policies import CnnPolicy, DQNPolicy, MlpPolicy, MultiInputPolicy, QNetwork
+from src.distillers._base import Distiller, Vanilla
 from src.engine.utils import validate, preprocess_env, load_checkpoint
+from src.models.breakout import breakout_model_dict
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -16,22 +17,19 @@ if __name__ == "__main__":
     parser.add_argument("-eps", "--episodes", type=int, default=100)
     args = parser.parse_args()
 
-    if args.ckpt == "pretrain":
-        _, model_path, log_path = get_model_path(
-            0,
-            "rl-trained-agents",
-            args.model,
-            args.env
-        )
-        model = DQN.load(model_path).policy.q_net
-        distiller = Distiller(model)
+
+    if args.env == "BreakoutNoFrameskip-v4":
+        model, path = breakout_model_dict[args.model]
+        if args.ckpt != "pretrain":
+            path = args.ckpt
+        model_state_dict = load_checkpoint(path)["model"]
+        model = model()
+        model.load_state_dict(model_state_dict)
+        model.to("cuda")
     else:
-        # if args.model == "dqn":
-        #     state = load_checkpoint(args.ckpt)
-        #     distiller = Distiller(student=QNetwork())
-        #     distiller.load_state_dict(state["model"])
-        # else:
         raise NotImplementedError()
+    
+    distiller = Vanilla(model)
     
     gym.register_envs(ale_py)
     env = preprocess_env(args.env)

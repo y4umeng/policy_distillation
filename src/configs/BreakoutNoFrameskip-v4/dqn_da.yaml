@@ -1,5 +1,5 @@
 EXPERIMENT:
-  NAME: "Breakout/DQN/DA"
+  NAME: "Breakout/DQN/DA, 0.01 lr, 0.2 prob"
   TAG: "breakout, dqn, DA"
   PROJECT: "policy_distillation_da_tests"
 LOG:
@@ -8,6 +8,5 @@ LOG:
 DISTILLER:
   TYPE: "DA"
 DA:
-  LR: 0.000192
-  EPOCHS: 1
-  PROB: 0.1
+  LR: 0.01
+  PROB: 0.2

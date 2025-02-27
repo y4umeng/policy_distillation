@@ -25,3 +25,18 @@ class Distiller(nn.Module):
 
     def forward_test(self, image):
         return self.student(image)
+    
+
+class Vanilla(nn.Module):
+    def __init__(self, student):
+        super(Vanilla, self).__init__()
+        self.student = student
+
+    def get_learnable_parameters(self):
+        return [v for k, v in self.student.named_parameters()]
+
+    def forward(self, **kwargs):
+        return self.forward_test(kwargs["image"])
+
+    def forward_test(self, image):
+        return self.student(image)

@@ -1,4 +1,4 @@
-from ._base import Distiller
+from ._base import Distiller, Vanilla
 from .PD import PD
 from .DA import DA
 

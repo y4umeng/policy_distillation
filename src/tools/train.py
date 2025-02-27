@@ -10,22 +10,15 @@ import ale_py
 from rl_zoo3.utils import get_model_path
 from stable_baselines3 import DQN
 from src.distillers import distiller_dict
-from src.engine.utils import reinitialize_model_weights, preprocess_env
+from src.engine.utils import preprocess_env, load_checkpoint, create_experiment_name
 from src.engine.cfg import CFG as cfg
 from src.engine import trainer_dict
+from src.models.breakout import breakout_model_dict
 
 cudnn.benchmark = True
 
 def main(cfg, resume, opts):
-    experiment_name = cfg.EXPERIMENT.NAME
-    if experiment_name == "":
-        experiment_name = cfg.EXPERIMENT.TAG
-    tags = cfg.EXPERIMENT.TAG.split(",")
-    if opts:
-        addtional_tags = ["{}:{}".format(k, v) for k, v in zip(opts[::2], opts[1::2])]
-        tags += addtional_tags
-        experiment_name += ",".join(addtional_tags)
-    experiment_name = os.path.join(cfg.EXPERIMENT.PROJECT, experiment_name)
+    experiment_name, tags = create_experiment_name(cfg, opts)
     if cfg.LOG.WANDB:
         try:
             import wandb
@@ -43,25 +36,18 @@ def main(cfg, resume, opts):
 
     # init models
     if cfg.DISTILLER.TYPE in distiller_dict:
-        # load teacher
-        _, model_path, _ = get_model_path(
-            0,
-            "rl-trained-agents",
-            cfg.DISTILLER.TEACHER,
-            cfg.DISTILLER.ENV
-        )
-         
-        if cfg.DISTILLER.TEACHER == "dqn":
-            teacher = DQN.load(model_path).policy.q_net
-        else:
-            raise NotImplementedError()
+        teacher, teacher_path = breakout_model_dict[cfg.DISTILLER.TEACHER]
+
+        teacher_state_dict = load_checkpoint(teacher_path)["model"]
+        teacher = teacher()
+        teacher.load_state_dict(teacher_state_dict)
+        teacher.to("cuda")
+
+        student, _ = breakout_model_dict[cfg.DISTILLER.STUDENT]
+        student = student().to("cuda")
         
         # student
-        if cfg.DISTILLER.STUDENT == "dqn":
-            student = reinitialize_model_weights(teacher)
-            distiller = distiller_dict[cfg.DISTILLER.TYPE](student, teacher, cfg)
-        else:
-            raise NotImplementedError()
+        distiller = distiller_dict[cfg.DISTILLER.TYPE](student, teacher, cfg)
     else:
         raise NotImplementedError()
 

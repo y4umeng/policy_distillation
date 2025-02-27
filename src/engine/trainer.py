@@ -46,14 +46,8 @@ class BaseTrainer(object):
         return optimizer
 
     def log(self, lr, epoch, log_dict):
-        # wandb log
-        if "test_score" in log_dict and log_dict["test_score"] > self.best_score:
-            self.best_score = log_dict["test_score"]
-            if self.cfg.LOG.WANDB:
-                wandb.run.summary["best_score"] = self.best_score
         if self.cfg.LOG.WANDB:
             log_dict["current lr"] = lr
-            log_dict["best_score"] = self.best_score
             wandb.log(log_dict)
 
     def generate_data(self):
@@ -63,7 +57,7 @@ class BaseTrainer(object):
         time_start = time.time()
         if self.cfg.LOG.BAR: pbar = tqdm(range(self.cfg.DATA.INCREMENT_SIZE))
         while collected < self.cfg.DATA.INCREMENT_SIZE:
-            state_v = torch.tensor(state, dtype=torch.float16, device="cuda").squeeze().unsqueeze(0)
+            state_v = torch.tensor(state, dtype=torch.float, device="cuda").squeeze().unsqueeze(0)
             if torch.rand(1) < self.cfg.DATA.EXPLORATION_RATE:
                 teacher_action = torch.randint(self.num_actions, size=(1,))
                 next_state, reward, terminated, truncated, _ = self.env.step(teacher_action)
@@ -84,7 +78,7 @@ class BaseTrainer(object):
 
             # Store in buffer
             self.replay_buffer.push(
-                state_v.squeeze().cpu(),
+                state_v.squeeze().cpu().to(torch.uint8),
                 teacher_action.cpu(),
                 policy_dist.cpu()
             )
@@ -177,7 +171,7 @@ class BaseTrainer(object):
                 os.path.join(self.log_path, "student_{}".format(epoch)),
             )
 
-        if epoch % self.cfg.LOG.EVAL_FREQ == 0:
+        if epoch == 1 or epoch % self.cfg.LOG.EVAL_FREQ == 0:
             # validate
             eval_start = time.time()
             total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR)
@@ -190,17 +184,27 @@ class BaseTrainer(object):
                 save_checkpoint(
                     student_state, os.path.join(self.log_path, "student_best")
                 )
-
+                self.best_score = log_dict["test_score"]
+                if self.cfg.LOG.WANDB:
+                    wandb.run.summary["best_score"] = self.best_score
+        
+        log_dict["best_score"] = self.best_score
         self.log(lr, epoch, log_dict)
+
+        if not self.cfg.LOG.BAR:
+            print(f"Epoch {epoch}. ", end="")
+            for k, v in log_dict.items():
+                print(f"{k}: {v: .3g}, ", end="")
+            print()
 
     def train_iter(self, data, epoch, train_meters):
         self.optimizer.zero_grad()
         train_start_time = time.time()
         image, action, teacher_probs = data
         train_meters["data_time"].update(time.time() - train_start_time)
-        image = image.cuda(non_blocking=True)
-        action = action.cuda(non_blocking=True)
-        teacher_probs = teacher_probs.cuda(non_blocking=True)
+        image = image.cuda(non_blocking=True).to(torch.float32)
+        action = action.cuda(non_blocking=True).to(torch.float32)
+        teacher_probs = teacher_probs.cuda(non_blocking=True).to(torch.float32)
 
         # forward
         preds, losses_dict = self.distiller(image=image, target=teacher_probs, epoch=epoch)

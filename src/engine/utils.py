@@ -5,6 +5,7 @@ import numpy as np
 from stable_baselines3.common.atari_wrappers import AtariWrapper
 from gymnasium.wrappers import FrameStackObservation
 from tqdm import tqdm
+import os
 
 def validate(distiller, env, num_episodes=100, bar=True):
     total_reward = 0
@@ -93,26 +94,17 @@ def accuracy(output, target, topk=(1,)):
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 
-def reinitialize_model_weights(model):
-    """
-    Copies and reinitializes the weights of a PyTorch model.
-
-    Args:
-        model (torch.nn.Module): The PyTorch model to copy and reinitialize.
-
-    Returns:
-        torch.nn.Module: A copy of the model with reinitialized weights.
-    """
-    copied_model = copy.deepcopy(model)
-    for module in copied_model.modules():
-        if isinstance(module, (torch.nn.Linear, torch.nn.Conv2d)):
-            torch.nn.init.xavier_uniform_(module.weight)
-            if module.bias is not None:
-                torch.nn.init.zeros_(module.bias)
-        elif isinstance(module, torch.nn.BatchNorm2d):
-            torch.nn.init.ones_(module.weight)
-            torch.nn.init.zeros_(module.bias)
-    return copied_model
+def create_experiment_name(cfg, opts):
+    experiment_name = cfg.EXPERIMENT.NAME
+    if experiment_name == "":
+        experiment_name = cfg.EXPERIMENT.TAG
+    tags = cfg.EXPERIMENT.TAG.split(",")
+    if opts:
+        addtional_tags = ["{}:{}".format(k, v) for k, v in zip(opts[::2], opts[1::2])]
+        tags += addtional_tags
+        experiment_name += ",".join(addtional_tags)
+    experiment_name = os.path.join(cfg.EXPERIMENT.PROJECT, experiment_name)
+    return experiment_name, tags
 
 def save_checkpoint(obj, path):
     with open(path, "wb") as f:
