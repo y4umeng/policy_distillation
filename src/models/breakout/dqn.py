@@ -24,7 +24,7 @@ class NatureCNN(nn.Module):
         )
     
     def forward(self, x):
-        x /= 255.0
+        x /= 255.0 # normalize
         x = self.cnn(x)  # Apply CNN layers
         x = self.linear(x)  # Apply Linear layers
         return x
@@ -44,22 +44,40 @@ class QNetwork(nn.Module):
         q_values = self.q_net(x)  # Get Q-values for each action
         return q_values
     
-# Define QNetworkSmall that extends QNetwork with smaller parameters
-class QNetworkSmall(QNetwork):
+# 25% size QNetwork, equivalent to Dist-KL-net1 from Policy Distillation paper
+class QNetwork1(QNetwork):
     def __init__(self):
         # Initialize with smaller parameters
-        super(QNetworkSmall, self).__init__(conv1_out_channels=16, 
+        super(QNetwork1, self).__init__(conv1_out_channels=16, 
                                             conv2_out_channels=32, 
                                             conv3_out_channels=32, 
                                             linear_out_features=256)
+        
+# 7% size QNetwork, equivalent to Dist-KL-net2 from Policy Distillation paper
+class QNetwork2(QNetwork):
+    def __init__(self):
+        # Initialize with smaller parameters
+        super(QNetwork2, self).__init__(conv1_out_channels=16, 
+                                            conv2_out_channels=16, 
+                                            conv3_out_channels=16, 
+                                            linear_out_features=128)
+        
+# 4% QNetwork, equivalent to Dist-KL-net3 from Policy Distillation paper
+class QNetwork3(QNetwork):
+    def __init__(self):
+        # Initialize with smaller parameters
+        super(QNetwork3, self).__init__(conv1_out_channels=16, 
+                                            conv2_out_channels=16, 
+                                            conv3_out_channels=16, 
+                                            linear_out_features=64)
+
+def count_params(model):
+    return sum(p.numel() for p in model.parameters())
+
 
 if __name__ == "__main__":
     # Create the original model
-    original_model = QNetwork()
-    print("Original Model:")
-    print(original_model)
-
-    # Create a smaller version with roughly half the parameters
-    small_model = QNetwork(conv1_out_channels=16, conv2_out_channels=32, conv3_out_channels=32, linear_out_features=256)
-    print("\nSmall Model:")
-    print(small_model)
+    print(f"DQN: {count_params(QNetwork())} parameters.")
+    print(f"DQN1: {count_params(QNetwork1())} parameters.")
+    print(f"DQN2: {count_params(QNetwork2())} parameters.")
+    print(f"DQN3: {count_params(QNetwork3())} parameters.")

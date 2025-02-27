@@ -57,7 +57,10 @@ class BaseTrainer(object):
         time_start = time.time()
         if self.cfg.LOG.BAR: pbar = tqdm(range(self.cfg.DATA.INCREMENT_SIZE))
         while collected < self.cfg.DATA.INCREMENT_SIZE:
-            state_v = torch.tensor(state, dtype=torch.float, device="cuda").squeeze().unsqueeze(0)
+            state_v = torch.tensor(state, dtype=torch.float, requires_grad=False).squeeze()
+            state_v_int = state_v.clone().to(torch.uint8)
+            state_v = state_v.unsqueeze(0).to("cuda")
+            # print(f"FIRST STATE: {state_v.shape}. {state_v.mean(), state_v.min(), state_v.max()}")
             if torch.rand(1) < self.cfg.DATA.EXPLORATION_RATE:
                 teacher_action = torch.randint(self.num_actions, size=(1,))
                 next_state, reward, terminated, truncated, _ = self.env.step(teacher_action)
@@ -78,7 +81,7 @@ class BaseTrainer(object):
 
             # Store in buffer
             self.replay_buffer.push(
-                state_v.squeeze().cpu().to(torch.uint8),
+                state_v_int,
                 teacher_action.cpu(),
                 policy_dist.cpu()
             )
@@ -192,9 +195,9 @@ class BaseTrainer(object):
         self.log(lr, epoch, log_dict)
 
         if not self.cfg.LOG.BAR:
-            print(f"Epoch {epoch}. ", end="")
+            print(f"Epoch {epoch}. ", end="", flush=True)
             for k, v in log_dict.items():
-                print(f"{k}: {v: .3g}, ", end="")
+                print(f"{k}: {v: .3g}, ", end="", flush=True)
             print()
 
     def train_iter(self, data, epoch, train_meters):
@@ -208,7 +211,7 @@ class BaseTrainer(object):
 
         # forward
         preds, losses_dict = self.distiller(image=image, target=teacher_probs, epoch=epoch)
-
+        
         # backward
         loss = sum([l.mean() for l in losses_dict.values()])
         loss.backward()

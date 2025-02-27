@@ -1,10 +1,10 @@
 EXPERIMENT:
-  NAME: "Breakout/DQN_SMALL/DA"
-  TAG: "breakout, dqn, DA"
+  NAME: "dqn_dqn3_pd"
+  TAG: "breakout, dqn, PD"
   PROJECT: "policy_distillation_small_dqn"
 LOG:
   WANDB: True
   BAR: False
 DISTILLER:
   TYPE: "PD"
-  STUDENT: "dqn_small"
+  STUDENT: "dqn3"
