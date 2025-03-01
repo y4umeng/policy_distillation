@@ -1,12 +1,13 @@
 EXPERIMENT:
-  NAME: "dqn_dqn_da"
+  NAME: "dqn_dqn3_da"
   TAG: "breakout, dqn, DA"
-  PROJECT: "policy_distillation_baselines"
+  PROJECT: "policy_distillation_small_dqn"
 LOG:
   WANDB: True
   BAR: False
 DISTILLER:
   TYPE: "DA"
+  STUDENT: "dqn3"
 DA:
   LR: 0.01
   PROB: 0.2

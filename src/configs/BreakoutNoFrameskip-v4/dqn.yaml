@@ -1,5 +1,5 @@
 EXPERIMENT:
-  NAME: "Breakout/DQN/PD"
+  NAME: "dqn_dqn_pd"
   TAG: "breakout, dqn, PD"
   PROJECT: "policy_distillation_baselines"
 LOG:

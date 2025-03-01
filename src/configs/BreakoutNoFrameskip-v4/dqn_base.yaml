@@ -1,6 +1,0 @@
-EXPERIMENT:
-  TAG: "breakout, dqn, base distiller"
-  PROJECT: "policy_distillation_tests"
-LOG:
-  WANDB: True
-  BAR: False

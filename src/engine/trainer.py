@@ -215,6 +215,7 @@ class BaseTrainer(object):
         # backward
         loss = sum([l.mean() for l in losses_dict.values()])
         loss.backward()
+        # torch.nn.utils.clip_grad_norm_(self.distiller.get_learnable_parameters(), max_norm=1)
         self.optimizer.step()
         train_meters["training_time"].update(time.time() - train_start_time)
         # collect info
