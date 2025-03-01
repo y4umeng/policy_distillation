@@ -85,8 +85,8 @@ class BaseTrainer(object):
             # Store in buffer
             self.replay_buffer.push(
                 state_v_int,
-                teacher_action.cpu(),
-                policy_dist.cpu()
+                teacher_action.cpu().to(torch.float),
+                policy_dist.cpu().to(torch.float)
             )
 
             state = next_state
@@ -109,9 +109,6 @@ class BaseTrainer(object):
             self.distiller.load_state_dict(state["model"])
             self.optimizer.load_state_dict(state["optimizer"])
             self.best_score = state["best_score"]
-            replay_buffer_path = os.path.join(self.log_path, "latest_replay_buffer.pt")
-            if os.path.exists(replay_buffer_path): 
-                self.replay_buffer = torch.load(replay_buffer_path, weights_only=False)
         while epoch < self.cfg.SOLVER.EPOCHS + 1:
             self.train_epoch(epoch)
             epoch += 1
@@ -172,8 +169,6 @@ class BaseTrainer(object):
             student_state, os.path.join(self.log_path, "student_latest")
         )
 
-        # save current replay buffer
-        torch.save(self.replay_buffer, os.path.join(self.log_path, "latest_replay_buffer.pt"))
         if epoch % self.cfg.LOG.SAVE_CHECKPOINT_FREQ == 0:
             save_checkpoint(
                 state, os.path.join(self.log_path, "epoch_{}".format(epoch))
