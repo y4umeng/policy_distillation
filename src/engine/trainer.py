@@ -53,13 +53,13 @@ class BaseTrainer(object):
             log_dict["current lr"] = lr
             wandb.log(log_dict)
 
-    def generate_data(self):
+    def generate_data(self, num_data_points):
         self.distiller.teacher.eval()
         state, _ = self.env.reset()
         collected = 0
         time_start = time.time()
-        if self.cfg.LOG.BAR: pbar = tqdm(range(self.cfg.DATA.INCREMENT_SIZE))
-        while collected < self.cfg.DATA.INCREMENT_SIZE:
+        if self.cfg.LOG.BAR: pbar = tqdm(range(num_data_points))
+        while collected < num_data_points:
             state_v = torch.tensor(state, dtype=torch.float, requires_grad=False).squeeze()
             state_v_int = state_v.clone().to(torch.uint8)
             state_v = state_v.unsqueeze(0).to("cuda")
@@ -109,6 +109,11 @@ class BaseTrainer(object):
             self.distiller.load_state_dict(state["model"])
             self.optimizer.load_state_dict(state["optimizer"])
             self.best_score = state["best_score"]
+            # refill replay buffer
+            if "buffer_size" in state and 0:
+                self.generate_data(state["buffer_size"])
+            else:
+                self.generate_data(min(self.cfg.DATA.MAX_CAPACITY, state["epoch"] * self.cfg.DATA.INCREMENT_SIZE))
         while epoch < self.cfg.SOLVER.EPOCHS + 1:
             self.train_epoch(epoch)
             epoch += 1
@@ -125,7 +130,7 @@ class BaseTrainer(object):
         }
         num_iter = ceil(len(self.replay_buffer)/self.cfg.SOLVER.BATCH_SIZE)
 
-        generatation_time = self.generate_data()
+        generatation_time = self.generate_data(self.cfg.DATA.INCREMENT_SIZE)
 
         data_loader = DataLoader(
             self.replay_buffer,
@@ -162,6 +167,7 @@ class BaseTrainer(object):
             "model": self.distiller.state_dict(),
             "optimizer": self.optimizer.state_dict(),
             "best_score": self.best_score,
+            "buffer_size": len(self.replay_buffer)
         }
         student_state = {"model": self.distiller.student.state_dict(), "epoch": epoch}
         save_checkpoint(state, os.path.join(self.log_path, "latest"))
@@ -181,7 +187,7 @@ class BaseTrainer(object):
         if epoch == 1 or epoch % self.cfg.LOG.EVAL_FREQ == 0:
             # validate
             eval_start = time.time()
-            total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR)
+            total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR, num_episodes=self.cfg.LOG.EVAL_EPISODES)
             eval_time = time.time() - eval_start
             log_dict["total_eval_time"] = eval_time
             log_dict["test_score"] = total_score

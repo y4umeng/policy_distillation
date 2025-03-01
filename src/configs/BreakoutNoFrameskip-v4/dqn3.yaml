@@ -1,7 +1,7 @@
 EXPERIMENT:
   NAME: "dqn_dqn3_pd"
   TAG: "breakout, dqn, PD"
-  PROJECT: "policy_distillation_small_dqn"
+  PROJECT: "policy_distillation_fixed_wrapper"
 LOG:
   WANDB: True
   BAR: False

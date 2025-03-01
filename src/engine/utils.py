@@ -1,13 +1,11 @@
 import gymnasium as gym
 import torch
-import copy
 import numpy as np
-from stable_baselines3.common.atari_wrappers import AtariWrapper
-from gymnasium.wrappers import FrameStackObservation
+from gymnasium.wrappers import FrameStackObservation, AtariPreprocessing
 from tqdm import tqdm
 import os
 
-def validate(distiller, env, num_episodes=100, bar=True):
+def validate(distiller, env, num_episodes=10, bar=True):
     total_reward = 0
     if bar: pbar = tqdm(range(num_episodes))
     for episode in range(num_episodes):
@@ -34,12 +32,12 @@ def validate(distiller, env, num_episodes=100, bar=True):
     if bar: pbar.close()
     return total_reward
 
-def preprocess_env(env_name):
+def preprocess_env(env_name, num_envs=1):
     """
     Preprocess the environment: resize, grayscale, and frame stack.
     """
     env = gym.make(env_name)
-    env = AtariWrapper(env)
+    env = AtariPreprocessing(env)
     env = FrameStackObservation(env, 4)
     return env
 

@@ -36,3 +36,4 @@ if __name__ == "__main__":
 
     total_score = validate(distiller, env, args.episodes)
     print(f"Total score over {args.episodes} episodes: {total_score}")
+    print(f"Average score: {total_score/args.episodes}")

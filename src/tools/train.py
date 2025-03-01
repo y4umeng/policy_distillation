@@ -7,8 +7,6 @@ from src.engine.cfg import show_cfg
 
 import gymnasium as gym
 import ale_py
-from rl_zoo3.utils import get_model_path
-from stable_baselines3 import DQN
 from src.distillers import distiller_dict
 from src.engine.utils import preprocess_env, load_checkpoint, create_experiment_name
 from src.engine.cfg import CFG as cfg
