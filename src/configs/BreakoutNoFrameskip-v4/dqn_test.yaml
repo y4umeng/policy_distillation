@@ -1,0 +1,11 @@
+EXPERIMENT:
+  NAME: "dqn_dqn_TEST"
+  TAG: "breakout, dqn, PD"
+  PROJECT: "policy_distillation_tests"
+LOG:
+  WANDB: False
+  BAR: False
+DISTILLER:
+  TYPE: "PD"
+# DATA:
+#   INCREMENT_SIZE: 1000

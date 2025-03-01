@@ -18,6 +18,9 @@ from .utils import (
 from .experience import ReplayBufferDataset
 from torch.utils.data import DataLoader
 
+import faulthandler
+faulthandler.enable()
+
 class BaseTrainer(object):
     def __init__(self, experiment_name, distiller, env, cfg):
         self.cfg = cfg
@@ -106,6 +109,9 @@ class BaseTrainer(object):
             self.distiller.load_state_dict(state["model"])
             self.optimizer.load_state_dict(state["optimizer"])
             self.best_score = state["best_score"]
+            replay_buffer_path = os.path.join(self.log_path, "latest_replay_buffer.pt")
+            if os.path.exists(replay_buffer_path): 
+                self.replay_buffer = torch.load(replay_buffer_path, weights_only=False)
         while epoch < self.cfg.SOLVER.EPOCHS + 1:
             self.train_epoch(epoch)
             epoch += 1
@@ -160,11 +166,14 @@ class BaseTrainer(object):
             "optimizer": self.optimizer.state_dict(),
             "best_score": self.best_score,
         }
-        student_state = {"model": self.distiller.student.state_dict()}
+        student_state = {"model": self.distiller.student.state_dict(), "epoch": epoch}
         save_checkpoint(state, os.path.join(self.log_path, "latest"))
         save_checkpoint(
             student_state, os.path.join(self.log_path, "student_latest")
         )
+
+        # save current replay buffer
+        torch.save(self.replay_buffer, os.path.join(self.log_path, "latest_replay_buffer.pt"))
         if epoch % self.cfg.LOG.SAVE_CHECKPOINT_FREQ == 0:
             save_checkpoint(
                 state, os.path.join(self.log_path, "epoch_{}".format(epoch))
