@@ -1,7 +1,7 @@
 EXPERIMENT:
-  NAME: "dqn_dqn4_da"
+  NAME: "dqn_dqn4_da_001_3"
   TAG: "breakout, dqn, DA"
-  PROJECT: "policy_distillation_small_dqn"
+  PROJECT: "policy_distillation_dqn_da"
 LOG:
   WANDB: True
   BAR: False
@@ -9,5 +9,5 @@ DISTILLER:
   TYPE: "DA"
   STUDENT: "dqn4"
 DA:
-  LR: 0.01
+  LR: 0.001
   PROB: 0.3

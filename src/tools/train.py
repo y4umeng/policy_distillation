@@ -1,7 +1,4 @@
-import os
 import argparse
-import copy
-import torch.nn as nn
 import torch.backends.cudnn as cudnn
 from src.engine.cfg import show_cfg
 
@@ -35,7 +32,6 @@ def main(cfg, resume, opts):
     # init models
     if cfg.DISTILLER.TYPE in distiller_dict:
         teacher, teacher_path = breakout_model_dict[cfg.DISTILLER.TEACHER]
-
         teacher_state_dict = load_checkpoint(teacher_path)["model"]
         teacher = teacher()
         teacher.load_state_dict(teacher_state_dict)
