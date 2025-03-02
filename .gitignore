@@ -175,6 +175,5 @@ cython_debug/
 rl-trained-agents/
 output/
 src/output/
-*.out
 wandb/
 src/wandb/
