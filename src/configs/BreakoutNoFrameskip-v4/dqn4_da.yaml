@@ -10,4 +10,4 @@ DISTILLER:
   STUDENT: "dqn4"
 DA:
   LR: 0.01
-  PROB: 0.2
+  PROB: 0.3

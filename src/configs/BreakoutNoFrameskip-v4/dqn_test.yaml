@@ -6,6 +6,6 @@ LOG:
   WANDB: False
   BAR: True
 DISTILLER:
-  TYPE: "PD"
+  TYPE: "DA"
 DATA:
   INCREMENT_SIZE: 1000

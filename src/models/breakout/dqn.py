@@ -24,7 +24,6 @@ class NatureCNN(nn.Module):
         )
     
     def forward(self, x):
-        x /= 255.0 # normalize
         x = self.cnn(x)  # Apply CNN layers
         x = self.linear(x)  # Apply Linear layers
         return x
@@ -40,6 +39,7 @@ class QNetwork(nn.Module):
         )
     
     def forward(self, x):
+        x = torch.div(x, 255.0) # normalize to [0, 1]
         x = self.features_extractor(x)  # Extract features using CNN and linear layers
         q_values = self.q_net(x)  # Get Q-values for each action
         return q_values

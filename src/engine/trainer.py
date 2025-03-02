@@ -128,6 +128,7 @@ class BaseTrainer(object):
             "top1": AverageMeter(),
             "top5": AverageMeter(),
         }
+
         num_iter = ceil(len(self.replay_buffer)/self.cfg.SOLVER.BATCH_SIZE)
 
         generatation_time = self.generate_data(self.cfg.DATA.INCREMENT_SIZE)
