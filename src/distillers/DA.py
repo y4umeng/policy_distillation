@@ -35,4 +35,5 @@ class DA(PD):
         loss = self.kld_with_temp(logits_student, target, self.cfg.SOLVER.SOFTMAX_TEMP)
         if torch.isnan(loss):
             print("NAN LOSS", flush=True)
+            raise ValueError()
         return logits_student, {"kld": loss}
