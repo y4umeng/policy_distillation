@@ -105,6 +105,7 @@ def create_experiment_name(cfg, opts):
     return experiment_name, tags
 
 def save_checkpoint(obj, path):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
         torch.save(obj, f)
 

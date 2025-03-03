@@ -85,7 +85,6 @@ parso==0.8.4
 pathvalidate==3.2.3
 pexpect==4.9.0
 pickleshare==0.7.5
-pillow==11.1.0
 platformdirs==4.3.6
 proglog==0.1.10
 prompt_toolkit==3.0.48

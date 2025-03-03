@@ -8,7 +8,7 @@ from src.distillers import distiller_dict
 from src.engine.utils import preprocess_env, load_checkpoint, create_experiment_name
 from src.engine.cfg import CFG as cfg
 from src.engine import trainer_dict
-from src.models.breakout import breakout_model_dict
+from src.models import get_model
 
 cudnn.benchmark = True
 
@@ -31,14 +31,15 @@ def main(cfg, resume, opts):
 
     # init models
     if cfg.DISTILLER.TYPE in distiller_dict:
-        teacher, teacher_path = breakout_model_dict[cfg.DISTILLER.TEACHER]
+        teacher, teacher_path = get_model(cfg.DISTILLER.TEACHER, cfg.DISTILLER.ENV, env.action_space.n)
+        if teacher_path == None:
+            raise ValueError("There's no pretrained checkpoint for this teacher model.")
         teacher_state_dict = load_checkpoint(teacher_path)["model"]
-        teacher = teacher()
         teacher.load_state_dict(teacher_state_dict)
         teacher.to("cuda")
 
-        student, _ = breakout_model_dict[cfg.DISTILLER.STUDENT]
-        student = student().to("cuda")
+        student, _ = get_model(cfg.DISTILLER.STUDENT, cfg.DISTILLER.ENV, env.action_space.n)
+        student.to("cuda")
         
         # student
         distiller = distiller_dict[cfg.DISTILLER.TYPE](student, teacher, cfg)
