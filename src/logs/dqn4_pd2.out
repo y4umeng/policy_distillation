@@ -546,3 +546,8 @@ Epoch 496. train_acc:  79.4, train_loss:  0.308, data_points:  5.4e+05, total_da
 Epoch 497. train_acc:  79.3, train_loss:  0.309, data_points:  5.4e+05, total_data_gen_time:  35.1, train_time:  0.000671, data_load_time:  2.73e-07, best_score:  2.43e+03, current lr:  0.0001, 
 Epoch 498. train_acc:  79.3, train_loss:  0.308, data_points:  5.4e+05, total_data_gen_time:  34.4, train_time:  0.000637, data_load_time:  2.63e-07, best_score:  2.43e+03, current lr:  0.0001, 
 Epoch 499. train_acc:  79.3, train_loss:  0.309, data_points:  5.4e+05, total_data_gen_time:  34.5, train_time:  0.000653, data_load_time:  2.57e-07, best_score:  2.43e+03, current lr:  0.0001, 
+Epoch 500. train_acc:  79.2, train_loss:  0.31, data_points:  5.4e+05, total_data_gen_time:  34.5, train_time:  0.00065, data_load_time:  2.66e-07, total_eval_time:  99.9, test_score:  3.02e+03, best_score:  3.02e+03, current lr:  0.0001, 
+[31m[EVAL] Best score:3020.0[0m
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mpolicy_distillation_small_dqn/dqn_dqn4_pd[0m at: [34mhttps://wandb.ai/y4umeng-columbia-university/policy_distillation_small_dqn/runs/d0lw70pr[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250303_124725-d0lw70pr/logs[0m
