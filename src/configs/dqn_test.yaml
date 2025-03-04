@@ -7,5 +7,6 @@ LOG:
   BAR: True
 DISTILLER:
   TYPE: "DA"
+  ENV: "BeamRiderNoFrameskip-v4"
 DATA:
   INCREMENT_SIZE: 1000

@@ -1,7 +1,7 @@
 from .dqn import QNetwork, QNetwork1, QNetwork2, QNetwork3, QNetwork4
 import os
 
-model_path = "download_ckpts/BreakoutNoFrameskip-v4/"
+model_dir = "download_ckpts/"
 
 model_dict = {
     "dqn": QNetwork,
@@ -12,9 +12,8 @@ model_dict = {
 }
 
 breakout_checkpoint_dict = {
-    "dqn": os.path.join(model_path, "dqn"),
-    "dqn3": os.path.join(model_path, "dqn3_pd"),
-    "dqn4": os.path.join(model_path, "dqn4_pd")
+    "dqn3": os.path.join(model_dir, "BreakoutNoFrameskip-v4/dqn3_pd"),
+    "dqn4": os.path.join(model_dir, "BreakoutNoFrameskip-v4/dqn4_pd")
 }
 
 checkpoint_dicts = {
@@ -28,5 +27,8 @@ def get_model(model_name, env_name, num_actions):
         path = checkpoint_dicts[env_name][model_name]
         return model, path
     else:
+        path = os.path.join(model_dir, env_name, "dqn")
+        if os.path.exists(path):
+            return model, path
         return model, None
 
