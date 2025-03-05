@@ -1,0 +1,82 @@
+nohup: ignoring input
+wandb: Currently logged in as: y4umeng (y4umeng-columbia-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Tracking run with wandb version 0.19.6
+wandb: Run data is saved locally in /root/policy_distillation/src/wandb/run-20250305_060251-owc487rj
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run policy_distillation_small_dqn/dqn_dqn4_da_0001_spaceinvaders
+wandb: ⭐️ View project at https://wandb.ai/y4umeng-columbia-university/policy_distillation_small_dqn
+wandb: 🚀 View run at https://wandb.ai/y4umeng-columbia-university/policy_distillation_small_dqn/runs/owc487rj
+A.L.E: Arcade Learning Environment (version 0.10.1+unknown)
+[Powered by Stella]
+[36m[INFO] CONFIG:
+DA:
+  EPOCHS: 1
+  LR: 0.0001
+  PROB: 0.3
+DATA:
+  EXPLORATION_RATE: 0.05
+  INCREMENT_SIZE: 54000
+  MAX_CAPACITY: 540000
+DISTILLER:
+  ENV: SpaceInvadersNoFrameskip-v4
+  STUDENT: dqn4
+  TEACHER: dqn
+  TYPE: DA
+EXPERIMENT:
+  DEVICE: cuda
+  NAME: dqn_dqn4_da_0001_spaceinvaders
+  PROJECT: policy_distillation_small_dqn
+  TAG: breakout, dqn, DA
+LOG:
+  BAR: false
+  EVAL_EPISODES: 5
+  EVAL_FREQ: 1
+  PREFIX: ./output
+  SAVE_CHECKPOINT_FREQ: 100
+  WANDB: true
+SOLVER:
+  BATCH_SIZE: 32
+  EPOCHS: 500
+  LR: 0.0001
+  LR_DECAY_RATE: 0.1
+  LR_DECAY_STAGES: []
+  MOMENTUM: 0.9
+  SOFTMAX_TEMP: 0.01
+  TRAINER: base
+  TYPE: SGD
+  WEIGHT_DECAY: 0.0001
+[0m
+Epoch 1. train_acc:  23.6, train_loss:  1.5, data_points:  5.4e+04, total_data_gen_time:  85.7, train_time:  0.00569, data_load_time:  7.04e-07, total_eval_time:  5.33, test_score:  1.2e+03, best_score:  1.2e+03, current lr:  0.0001, 
+Epoch 2. train_acc:  33.3, train_loss:  1.31, data_points:  1.08e+05, total_data_gen_time:  86.1, train_time:  0.00522, data_load_time:  7.59e-07, total_eval_time:  6.12, test_score:  635, best_score:  1.2e+03, current lr:  0.0001, 
+Epoch 3. train_acc:  37.7, train_loss:  1.22, data_points:  1.62e+05, total_data_gen_time:  85.6, train_time:  0.00495, data_load_time:  8.03e-07, total_eval_time:  4.28, test_score:  1.25e+03, best_score:  1.25e+03, current lr:  0.0001, 
+Epoch 4. train_acc:  41.1, train_loss:  1.15, data_points:  2.16e+05, total_data_gen_time:  87.5, train_time:  0.00507, data_load_time:  7.77e-07, total_eval_time:  3.98, test_score:  690, best_score:  1.25e+03, current lr:  0.0001, 
+Epoch 5. train_acc:  43.1, train_loss:  1.12, data_points:  2.7e+05, total_data_gen_time:  86.5, train_time:  0.00519, data_load_time:  8.52e-07, total_eval_time:  4.5, test_score:  810, best_score:  1.25e+03, current lr:  0.0001, 
+Epoch 6. train_acc:  45.1, train_loss:  1.08, data_points:  3.24e+05, total_data_gen_time:  85.7, train_time:  0.00506, data_load_time:  8.28e-07, total_eval_time:  2.6, test_score:  525, best_score:  1.25e+03, current lr:  0.0001, 
+Epoch 7. train_acc:  47.2, train_loss:  1.04, data_points:  3.78e+05, total_data_gen_time:  87.6, train_time:  0.00529, data_load_time:  8.07e-07, total_eval_time:  3.72, test_score:  1.14e+03, best_score:  1.25e+03, current lr:  0.0001, 
+Epoch 8. train_acc:  48.7, train_loss:  1.01, data_points:  4.32e+05, total_data_gen_time:  85.8, train_time:  0.00504, data_load_time:  8.56e-07, total_eval_time:  2.8, test_score:  720, best_score:  1.25e+03, current lr:  0.0001, 
+Epoch 9. train_acc:  50, train_loss:  0.99, data_points:  4.86e+05, total_data_gen_time:  87, train_time:  0.00526, data_load_time:  7.98e-07, total_eval_time:  5.13, test_score:  875, best_score:  1.25e+03, current lr:  0.0001, 
+Epoch 10. train_acc:  50.9, train_loss:  0.971, data_points:  5.4e+05, total_data_gen_time:  87.3, train_time:  0.00515, data_load_time:  7.48e-07, total_eval_time:  4.9, test_score:  1.6e+03, best_score:  1.6e+03, current lr:  0.0001, 
+Epoch 11. train_acc:  51.9, train_loss:  0.951, data_points:  5.4e+05, total_data_gen_time:  86.8, train_time:  0.00522, data_load_time:  8.39e-07, total_eval_time:  7.27, test_score:  2.98e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 12. train_acc:  52.5, train_loss:  0.938, data_points:  5.4e+05, total_data_gen_time:  87.8, train_time:  0.00523, data_load_time:  8.53e-07, total_eval_time:  5.6, test_score:  720, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 13. train_acc:  53.1, train_loss:  0.926, data_points:  5.4e+05, total_data_gen_time:  86.8, train_time:  0.00532, data_load_time:  8.67e-07, total_eval_time:  2.95, test_score:  835, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 14. train_acc:  53.7, train_loss:  0.913, data_points:  5.4e+05, total_data_gen_time:  86.8, train_time:  0.00526, data_load_time:  8.33e-07, total_eval_time:  5.78, test_score:  1.34e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 15. train_acc:  54.2, train_loss:  0.901, data_points:  5.4e+05, total_data_gen_time:  86.9, train_time:  0.00521, data_load_time:  8.49e-07, total_eval_time:  5.95, test_score:  1.16e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 16. train_acc:  54.7, train_loss:  0.889, data_points:  5.4e+05, total_data_gen_time:  86.3, train_time:  0.00537, data_load_time:  8.18e-07, total_eval_time:  3.77, test_score:  1.34e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 17. train_acc:  55.1, train_loss:  0.882, data_points:  5.4e+05, total_data_gen_time:  87.1, train_time:  0.00529, data_load_time:  8.22e-07, total_eval_time:  4.75, test_score:  2.26e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 18. train_acc:  55.6, train_loss:  0.873, data_points:  5.4e+05, total_data_gen_time:  85.9, train_time:  0.00533, data_load_time:  8.24e-07, total_eval_time:  2.85, test_score:  545, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 19. train_acc:  55.8, train_loss:  0.867, data_points:  5.4e+05, total_data_gen_time:  87, train_time:  0.00542, data_load_time:  8.67e-07, total_eval_time:  3.16, test_score:  785, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 20. train_acc:  56.1, train_loss:  0.861, data_points:  5.4e+05, total_data_gen_time:  86.7, train_time:  0.00501, data_load_time:  8.41e-07, total_eval_time:  3.07, test_score:  950, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 21. train_acc:  56.3, train_loss:  0.857, data_points:  5.4e+05, total_data_gen_time:  85.9, train_time:  0.00507, data_load_time:  8.64e-07, total_eval_time:  4.75, test_score:  1.39e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 22. train_acc:  56.6, train_loss:  0.853, data_points:  5.4e+05, total_data_gen_time:  86.3, train_time:  0.00511, data_load_time:  8.81e-07, total_eval_time:  4.56, test_score:  980, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 23. train_acc:  56.9, train_loss:  0.845, data_points:  5.4e+05, total_data_gen_time:  87.3, train_time:  0.0051, data_load_time:  8.51e-07, total_eval_time:  5.53, test_score:  1.28e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 24. train_acc:  57.2, train_loss:  0.841, data_points:  5.4e+05, total_data_gen_time:  86.5, train_time:  0.00529, data_load_time:  9.01e-07, total_eval_time:  4.88, test_score:  1.31e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 25. train_acc:  57.5, train_loss:  0.833, data_points:  5.4e+05, total_data_gen_time:  87.3, train_time:  0.00533, data_load_time:  8.51e-07, total_eval_time:  4.08, test_score:  1.08e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 26. train_acc:  57.6, train_loss:  0.833, data_points:  5.4e+05, total_data_gen_time:  85.6, train_time:  0.00541, data_load_time:  8e-07, total_eval_time:  3.87, test_score:  1e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 27. train_acc:  57.9, train_loss:  0.828, data_points:  5.4e+05, total_data_gen_time:  85.6, train_time:  0.00535, data_load_time:  8.28e-07, total_eval_time:  5.07, test_score:  1.68e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 28. train_acc:  57.8, train_loss:  0.826, data_points:  5.4e+05, total_data_gen_time:  87.5, train_time:  0.00526, data_load_time:  7.93e-07, total_eval_time:  4.51, test_score:  1.45e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 29. train_acc:  58, train_loss:  0.822, data_points:  5.4e+05, total_data_gen_time:  86.4, train_time:  0.00551, data_load_time:  8.04e-07, total_eval_time:  5.31, test_score:  1.62e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 30. train_acc:  58.3, train_loss:  0.817, data_points:  5.4e+05, total_data_gen_time:  85.6, train_time:  0.00519, data_load_time:  8.28e-07, total_eval_time:  4.01, test_score:  1.13e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 31. train_acc:  58.2, train_loss:  0.818, data_points:  5.4e+05, total_data_gen_time:  86.9, train_time:  0.00534, data_load_time:  8.48e-07, total_eval_time:  5.42, test_score:  990, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 32. train_acc:  58.2, train_loss:  0.816, data_points:  5.4e+05, total_data_gen_time:  85.8, train_time:  0.00528, data_load_time:  8.48e-07, total_eval_time:  5.44, test_score:  2.14e+03, best_score:  2.98e+03, current lr:  0.0001, 
+Epoch 33. train_acc:  58.4, train_loss:  0.813, data_points:  5.4e+05, total_data_gen_time:  86.5, train_time:  0.0053, data_load_time:  8.54e-07, total_eval_time:  4.46, test_score:  1.08e+03, best_score:  2.98e+03, current lr:  0.0001, 
