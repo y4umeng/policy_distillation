@@ -5,12 +5,7 @@ from .PD import PD
 import copy
 
 
-class DA(PD):
-    def normalize(self, logit):
-        mean = logit.mean(dim=-1, keepdims=True)
-        stdv = logit.std(dim=-1, keepdims=True)
-        return (logit - mean) / (1e-7 + stdv)
-    
+class DA(PD):    
     def DA(self, images):
         fake_student = copy.deepcopy(self.student)
         images.requires_grad = True
