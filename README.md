@@ -1,6 +1,6 @@
 # Policy Distillation for Atari Environments
 
-This repository implements policy distillation techniques applied to Atari game environments. The framework demonstrates how to train a Deep Q-Network (DQN) teacher model and distill its policy into a smaller, more efficient student network using PyTorch and Gymnasium. This branch is modified to use envpool.
+This repository implements policy distillation techniques applied to Atari game environments. The framework demonstrates how to train a Deep Q-Network (DQN) teacher model and distill its policy into a smaller, more efficient student network using PyTorch and Gymnasium. This branch is modified to use envpool. WIP
 
 ---
 
