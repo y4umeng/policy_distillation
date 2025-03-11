@@ -1,4 +1,4 @@
-from .dqn import QNetwork, QNetwork1, QNetwork2, QNetwork3, QNetwork4
+from .dqn import QNetwork, QNetwork1, QNetwork2, QNetwork3, QNetwork4, QNetwork5
 import os
 
 model_dir = "download_ckpts/"
@@ -8,7 +8,8 @@ model_dict = {
     "dqn1": QNetwork1,
     "dqn2": QNetwork2,
     "dqn3": QNetwork3,
-    "dqn4": QNetwork4
+    "dqn4": QNetwork4,
+    "dqn5": QNetwork5
 }
 
 breakout_checkpoint_dict = {

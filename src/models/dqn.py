@@ -83,6 +83,16 @@ class QNetwork4(QNetwork):
                                             conv3_out_channels=8, 
                                             linear_out_features=32,
                                             num_actions=num_actions)
+        
+# 1% QNetwork
+class QNetwork5(QNetwork):
+    def __init__(self, num_actions):
+        # Initialize with smaller parameters
+        super(QNetwork5, self).__init__(conv1_out_channels=4, 
+                                            conv2_out_channels=4, 
+                                            conv3_out_channels=4, 
+                                            linear_out_features=16,
+                                            num_actions=num_actions)
 
 def count_params(model):
     return sum(p.numel() for p in model.parameters())
@@ -90,8 +100,9 @@ def count_params(model):
 
 if __name__ == "__main__":
     # Create the original model
-    print(f"DQN: {count_params(QNetwork())} parameters.")
-    print(f"DQN1: {count_params(QNetwork1())} parameters.")
-    print(f"DQN2: {count_params(QNetwork2())} parameters.")
-    print(f"DQN3: {count_params(QNetwork3())} parameters.")
-    print(f"DQN4: {count_params(QNetwork4())} parameters.")
+    print(f"DQN: {count_params(QNetwork(4))} parameters.")
+    print(f"DQN1: {count_params(QNetwork1(4))} parameters.")
+    print(f"DQN2: {count_params(QNetwork2(4))} parameters.")
+    print(f"DQN3: {count_params(QNetwork3(4))} parameters.")
+    print(f"DQN4: {count_params(QNetwork4(4))} parameters.")
+    print(f"DQN5: {count_params(QNetwork5(5))} parameters.")

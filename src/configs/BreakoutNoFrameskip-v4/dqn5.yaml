@@ -1,0 +1,10 @@
+EXPERIMENT:
+  NAME: "dqn_dqn5_pd"
+  TAG: "breakout, dqn, PD"
+  PROJECT: "policy_distillation_small_dqn"
+LOG:
+  WANDB: False
+  BAR: True
+DISTILLER:
+  TYPE: "PD"
+  STUDENT: "dqn5"
