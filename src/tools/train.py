@@ -5,7 +5,8 @@ from src.engine.cfg import show_cfg
 import gymnasium as gym
 import ale_py
 from src.distillers import distiller_dict
-from src.engine.utils import preprocess_env, load_checkpoint, create_experiment_name
+from src.engine.utils import load_checkpoint, create_experiment_name # preprocess_env
+from src.engine.envpool_val import preprocess_env
 from src.engine.cfg import CFG as cfg
 from src.engine import trainer_dict
 from src.models import get_model
@@ -27,7 +28,11 @@ def main(cfg, resume, opts):
 
     # init env
     gym.register_envs(ale_py)
-    env = preprocess_env(cfg.DISTILLER.ENV)
+    env = preprocess_env(
+        cfg.DISTILLER.ENV, 
+        num_envs=cfg.DATA.NUM_ENVS, 
+        batch_size=cfg.DATA.ENV_BATCH_SIZE
+        )
 
     # init models
     if cfg.DISTILLER.TYPE in distiller_dict:

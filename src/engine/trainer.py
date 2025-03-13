@@ -54,52 +54,93 @@ class BaseTrainer(object):
             wandb.log(log_dict)
 
     def generate_data(self, num_data_points):
+        """
+        Asynchronous EnvPool version of data collection.
+        We'll collect exactly 'num_data_points' teacher-labeled transitions,
+        skipping random transitions (like your original code).
+        """
+        import time
+        from tqdm import tqdm
+        import torch
+        import numpy as np
+
         self.distiller.teacher.eval()
-        state, _ = self.env.reset()
+
+        # Start all parallel envs in async mode
+        self.env.async_reset()
+
         collected = 0
         time_start = time.time()
-        if self.cfg.LOG.BAR: pbar = tqdm(range(num_data_points))
+
+        # Optional progress bar
+        if self.cfg.LOG.BAR:
+            pbar = tqdm(total=num_data_points)
+
         while collected < num_data_points:
-            state_v = torch.tensor(state, dtype=torch.float, requires_grad=False).squeeze()
-            state_v_int = state_v.clone().to(torch.uint8)
-            state_v = state_v.unsqueeze(0).to("cuda")
-            # print(f"FIRST STATE: {state_v.shape}. {state_v.mean(), state_v.min(), state_v.max()}")
-            if torch.rand(1) < self.cfg.DATA.EXPLORATION_RATE:
-                teacher_action = torch.randint(self.num_actions, size=(1,))
-                next_state, reward, terminated, truncated, _ = self.env.step(teacher_action)
-                done = terminated or truncated
-                if done:
-                    state, _ = self.env.reset()
-                else: 
-                    state = next_state
-                continue
+            # 1) Receive a batch of observations, rewards, dones
+            obs, rew, terminated, truncated, info = self.env.recv()
+            # 'obs' shape is (batch_size, C, H, W) for Atari
+            # info["env_id"] shape is (batch_size,)
 
+            env_id = info["env_id"]
+            batch_size = obs.shape[0]
+
+            # 2) Decide for each env in the batch: random or teacher
+            random_mask = (torch.rand(batch_size) < self.cfg.DATA.EXPLORATION_RATE).cpu().numpy()
+
+            # 3) If not random, do teacher inference on GPU
+            obs_tensor = torch.from_numpy(obs).float().to("cuda")  # [batch_size, C, H, W]
             with torch.no_grad():
-                policy_dist = self.distiller.teacher(state_v)
+                policy_dist_all = self.distiller.teacher(obs_tensor)  # [batch_size, num_actions]
+            teacher_actions_all = torch.argmax(policy_dist_all, dim=1).cpu().numpy()
 
-            teacher_action = torch.argmax(policy_dist)
+            # We'll build the actions array to send back
+            actions = np.zeros(batch_size, dtype=np.int64)
 
-            next_state, reward, terminated, truncated, _ = self.env.step(teacher_action)
-            done = terminated or truncated
+            # 4) For each environment in this batch:
+            for i in range(batch_size):
+                if random_mask[i]:
+                    # Pick a random action
+                    actions[i] = np.random.randint(self.num_actions)
+                    # Skip storing (like your original code with 'continue')
+                else:
+                    # Pick the teacher's argmax action
+                    actions[i] = teacher_actions_all[i]
 
-            # Store in buffer
-            self.replay_buffer.push(
-                state_v_int,
-                teacher_action.cpu().to(torch.float),
-                policy_dist.cpu().to(torch.float)
-            )
+                    # Immediately store in the replay buffer (like your original code),
+                    # which only saves (state, action, policy), not the next state.
+                    state_v_int = torch.from_numpy(obs[i]).to(torch.uint8)
+                    teacher_action_tensor = torch.tensor(actions[i], dtype=torch.float)
+                    policy_dist_tensor = policy_dist_all[i].cpu().float()
 
-            state = next_state
-            collected += 1
+                    self.replay_buffer.push(
+                        state_v_int,
+                        teacher_action_tensor,
+                        policy_dist_tensor
+                    )
 
-            if done:
-                state, _ = self.env.reset()
-            if self.cfg.LOG.BAR:
-                pbar.set_description(log_msg("Generating data.", f"TRAIN"))
-                pbar.update()
-        if self.cfg.LOG.BAR: pbar.close()
+                    collected += 1
+                    if self.cfg.LOG.BAR:
+                        pbar.update(1)
+                        pbar.set_description("Generating data (TRAIN)")
+
+                    # If we've hit the quota of data, we can break out
+                    if collected >= num_data_points:
+                        break
+
+            # 5) Send the chosen actions back to those envs
+            self.env.send(actions, env_id)
+
+            # Break the outer while-loop if we've already collected enough
+            if collected >= num_data_points:
+                break
+
+        if self.cfg.LOG.BAR:
+            pbar.close()
+
         self.replay_buffer.check_capacity()
         return time.time() - time_start
+
 
     def train(self, resume=False):
         epoch = 1
