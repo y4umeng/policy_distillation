@@ -21,8 +21,25 @@ from torch.utils.data import DataLoader
 import faulthandler
 faulthandler.enable()
 
+def create_unique_log_path(prefix, experiment_name, resume):
+    # Initial log path, if resuming then will override existing files at base_path
+    base_path = os.path.join(prefix, experiment_name)
+    if resume: return base_path
+
+    log_path = base_path
+    counter = 1
+
+    # Check if the path exists and append a number if necessary
+    while os.path.exists(log_path):
+        log_path = f"{base_path}_{counter}"
+        counter += 1
+
+    # Create the directory
+    os.makedirs(log_path)
+    return log_path
+
 class BaseTrainer(object):
-    def __init__(self, experiment_name, distiller, env, cfg):
+    def __init__(self, experiment_name, distiller, env, cfg, resume):
         self.cfg = cfg
         self.env = env
         self.distiller = distiller
@@ -32,7 +49,7 @@ class BaseTrainer(object):
         self.best_score = -1
 
         # init loggers
-        self.log_path = os.path.join(cfg.LOG.PREFIX, experiment_name)
+        self.log_path = create_unique_log_path(cfg.LOG.PREFIX, experiment_name, resume)
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
 

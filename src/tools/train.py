@@ -48,7 +48,7 @@ def main(cfg, resume, opts):
 
     # train
     trainer = trainer_dict[cfg.SOLVER.TRAINER](
-        experiment_name, distiller, env, cfg
+        experiment_name, distiller, env, cfg, resume
     )
     trainer.train(resume=resume)
 
