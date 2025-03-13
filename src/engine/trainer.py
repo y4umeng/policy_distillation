@@ -105,7 +105,7 @@ class BaseTrainer(object):
                 teacher_action.cpu().to(torch.float),
                 policy_dist.cpu().to(torch.float)
             )
-
+            
             state = next_state
             collected += 1
 
