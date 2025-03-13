@@ -14,7 +14,7 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--model", type=str, default="dqn")
     parser.add_argument("-e", "--env", type=str, default="BreakoutNoFrameskip-v4")
     parser.add_argument("-c", "--ckpt", type=str, default="pretrain")
-    parser.add_argument("-eps", "--episodes", type=int, default=100)
+    parser.add_argument("-eps", "--episodes", type=int, default=1000)
     args = parser.parse_args()
 
     gym.register_envs(ale_py)

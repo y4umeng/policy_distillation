@@ -1,0 +1,58 @@
+nohup: ignoring input
+wandb: Currently logged in as: y4umeng (y4umeng-columbia-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Tracking run with wandb version 0.19.6
+wandb: Run data is saved locally in /home/yw3809/Projects/policy_distillation/src/wandb/run-20250310_210745-llkunkc1
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run policy_distillation_small_dqn/dqn_dqn4_da_0001
+wandb: ⭐️ View project at https://wandb.ai/y4umeng-columbia-university/policy_distillation_small_dqn
+wandb: 🚀 View run at https://wandb.ai/y4umeng-columbia-university/policy_distillation_small_dqn/runs/llkunkc1
+A.L.E: Arcade Learning Environment (version 0.10.1+unknown)
+[Powered by Stella]
+[36m[INFO] CONFIG:
+DA:
+  EPOCHS: 1
+  LR: 0.0001
+  PROB: 0.3
+DATA:
+  EXPLORATION_RATE: 0.05
+  INCREMENT_SIZE: 54000
+  MAX_CAPACITY: 540000
+DISTILLER:
+  ENV: BreakoutNoFrameskip-v4
+  STUDENT: dqn4
+  TEACHER: dqn
+  TYPE: DA
+EXPERIMENT:
+  DEVICE: cuda
+  NAME: dqn_dqn4_da_0001
+  PROJECT: policy_distillation_small_dqn
+  TAG: breakout, dqn, DA
+LOG:
+  BAR: false
+  EVAL_EPISODES: 5
+  EVAL_FREQ: 1
+  PREFIX: ./output
+  SAVE_CHECKPOINT_FREQ: 100
+  WANDB: true
+SOLVER:
+  BATCH_SIZE: 32
+  EPOCHS: 500
+  LR: 0.0001
+  LR_DECAY_RATE: 0.1
+  LR_DECAY_STAGES: []
+  MOMENTUM: 0.9
+  SOFTMAX_TEMP: 0.01
+  TRAINER: base
+  TYPE: SGD
+  WEIGHT_DECAY: 0.0001
+[0m
+Epoch 1. train_acc:  54, train_loss:  0.845, data_points:  5.4e+04, total_data_gen_time:  32.8, train_time:  0.00127, data_load_time:  2.51e-07, total_eval_time:  0.322, test_score:  0, best_score:  0, current lr:  0.0001, 
+Epoch 2. train_acc:  55.2, train_loss:  0.814, data_points:  1.08e+05, total_data_gen_time:  32.7, train_time:  0.00118, data_load_time:  2.7e-07, total_eval_time:  0.32, test_score:  0, best_score:  0, current lr:  0.0001, 
+Epoch 3. train_acc:  56.1, train_loss:  0.795, data_points:  1.62e+05, total_data_gen_time:  32.2, train_time:  0.00114, data_load_time:  2.59e-07, total_eval_time:  0.312, test_score:  0, best_score:  0, current lr:  0.0001, 
+Epoch 4. train_acc:  58.5, train_loss:  0.761, data_points:  2.16e+05, total_data_gen_time:  32, train_time:  0.00116, data_load_time:  2.6e-07, total_eval_time:  0.312, test_score:  0, best_score:  0, current lr:  0.0001, 
+Epoch 5. train_acc:  59.1, train_loss:  0.742, data_points:  2.7e+05, total_data_gen_time:  32.1, train_time:  0.00119, data_load_time:  2.72e-07, total_eval_time:  0.352, test_score:  0, best_score:  0, current lr:  0.0001, 
+Epoch 6. train_acc:  59.5, train_loss:  0.728, data_points:  3.24e+05, total_data_gen_time:  33, train_time:  0.00115, data_load_time:  2.81e-07, total_eval_time:  0.311, test_score:  0, best_score:  0, current lr:  0.0001, 
+Epoch 7. train_acc:  60.3, train_loss:  0.713, data_points:  3.78e+05, total_data_gen_time:  31.9, train_time:  0.00117, data_load_time:  2.74e-07, total_eval_time:  0.316, test_score:  0, best_score:  0, current lr:  0.0001, 
+Epoch 8. train_acc:  60.8, train_loss:  0.697, data_points:  4.32e+05, total_data_gen_time:  31.8, train_time:  0.0012, data_load_time:  2.68e-07, total_eval_time:  0.472, test_score:  11, best_score:  11, current lr:  0.0001, 
+Epoch 9. train_acc:  61.5, train_loss:  0.677, data_points:  4.86e+05, total_data_gen_time:  31.9, train_time:  0.00119, data_load_time:  2.78e-07, total_eval_time:  0.437, test_score:  7, best_score:  11, current lr:  0.0001, 
