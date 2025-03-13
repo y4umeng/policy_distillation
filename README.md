@@ -86,6 +86,7 @@ AutoROM --accept-license
 For development, install the package locally:
 
 ```bash
+sudo python3 setup.py develop
 pip install -e .
 ```
 
