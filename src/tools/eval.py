@@ -6,7 +6,8 @@ from rl_zoo3.utils import get_model_path
 from stable_baselines3 import DQN
 # from stable_baselines3.dqn.policies import CnnPolicy, DQNPolicy, MlpPolicy, MultiInputPolicy, QNetwork
 from src.distillers._base import Distiller, Vanilla
-from src.engine.utils import validate, preprocess_env, load_checkpoint
+from src.engine.utils import load_checkpoint #, validate, preprocess_env
+from src.engine.envpool_val import validate, preprocess_env
 from src.models import get_model
 
 if __name__ == "__main__":
