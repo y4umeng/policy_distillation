@@ -9,12 +9,13 @@ from collections import OrderedDict
 from .utils import (
     AverageMeter,
     accuracy,
-    validate,
+    # validate,
     adjust_learning_rate,
     save_checkpoint,
     load_checkpoint,
     log_msg
 )
+from .envpool_val import validate_async
 from .experience import ReplayBufferDataset
 from torch.utils.data import DataLoader
 
@@ -229,7 +230,12 @@ class BaseTrainer(object):
         if epoch == 1 or epoch % self.cfg.LOG.EVAL_FREQ == 0:
             # validate
             eval_start = time.time()
-            total_score = validate(self.distiller, self.env, bar=self.cfg.LOG.BAR, num_episodes=self.cfg.LOG.EVAL_EPISODES)
+            total_score = validate_async(
+                self.distiller, 
+                self.env, 
+                self.cfg.DATA.NUM_ENVS,
+                bar=self.cfg.LOG.BAR, 
+                num_episodes=self.cfg.LOG.EVAL_EPISODES)
             eval_time = time.time() - eval_start
             log_dict["total_eval_time"] = eval_time
             log_dict["test_score"] = total_score
