@@ -8,6 +8,5 @@ LOG:
 DISTILLER:
   TYPE: "DA"
   ENV: "BeamRiderNoFrameskip-v4"
-  STUDENT: "dqn5"
-DATA:
-  INCREMENT_SIZE: 1000
+# DATA:
+#   INCREMENT_SIZE: 1000
