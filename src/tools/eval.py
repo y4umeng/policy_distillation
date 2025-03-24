@@ -15,6 +15,7 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--env", type=str, default="BreakoutNoFrameskip-v4")
     parser.add_argument("-c", "--ckpt", type=str, default="pretrain")
     parser.add_argument("-eps", "--episodes", type=int, default=1000)
+    parser.add_argument("-w", "--wandb", type=str, default="")
     args = parser.parse_args()
 
     gym.register_envs(ale_py)
@@ -29,6 +30,13 @@ if __name__ == "__main__":
     
     distiller = Vanilla(model)
 
-    total_score = validate(distiller, env, args.episodes)
+    total_score = validate(
+        distiller, 
+        env, 
+        num_episodes=args.episodes, 
+        bar=True, 
+        wandb_name = (args.model + "_" + args.env + "_" + args.wandb) if args.wandb else ""       
+        )
+    
     print(f"Total score over {args.episodes} episodes: {total_score}")
     print(f"Average score: {total_score/args.episodes}")
