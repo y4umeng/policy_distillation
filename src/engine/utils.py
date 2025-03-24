@@ -1,18 +1,27 @@
 import gymnasium as gym
 import torch
 import numpy as np
+import time
 from gymnasium.wrappers import FrameStackObservation, AtariPreprocessing
 from tqdm import tqdm
 import os
 
-def validate(distiller, env, num_episodes=10, bar=True):
-    total_reward = 0
-    if bar: pbar = tqdm(range(num_episodes))
+def validate(distiller, env, num_episodes=10, bar=True, wandb_name=""):
+    if wandb_name:
+        import wandb
+        wandb.init(project="policy_distillation_evals", name=wandb_name)
+
+    episode_rewards = []
+    if bar:
+        pbar = tqdm(range(num_episodes))
+        
     for episode in range(num_episodes):
+        start_time = time.time()
+        
         state, _ = env.reset()
         episode_reward = 0
         done = False
-
+        
         while not done:
             # Convert the state to a tensor and get the action
             state_v = torch.tensor(state, dtype=torch.float32, device="cuda").squeeze().unsqueeze(0)
@@ -25,12 +34,32 @@ def validate(distiller, env, num_episodes=10, bar=True):
             done = terminated or truncated
             episode_reward += reward
             state = next_state
-        total_reward += episode_reward
+
+        episode_rewards.append(episode_reward)
+        
+        # Log per-episode reward and runtime if using wandb
+        if wandb_name:
+            episode_runtime = time.time() - start_time
+            # Log average reward and standard deviation across all episodes
+            avg_reward = np.mean(episode_rewards)
+            std_reward = np.std(episode_rewards)
+            
+            wandb.log({
+                "episode_reward": episode_reward,
+                "episode_runtime": episode_runtime,
+                "avg_reward": avg_reward,
+                "std_reward": std_reward
+            }, step=episode)
+
         if bar:
-            pbar.set_description(log_msg(f"Total score: {total_reward}", "EVAL"))
+            pbar.set_description(f"Episode {episode+1}/{num_episodes} | Reward: {episode_reward:.2f}")
             pbar.update()
-    if bar: pbar.close()
-    return total_reward
+
+    if bar:
+        pbar.close()
+
+    return sum(episode_rewards)
+
 
 def preprocess_env(env_name, num_envs=1):
     """
