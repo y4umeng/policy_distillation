@@ -1,0 +1,11 @@
+EXPERIMENT:
+  NAME: "dqn_dqn5_da_mspacman"
+  TAG: "breakout, dqn, DA"
+  PROJECT: "policy_distillation_small_dqn"
+LOG:
+  WANDB: True
+  BAR: False
+DISTILLER:
+  TYPE: "DA"
+  STUDENT: "dqn5"
+  ENV: "MsPacmanNoFrameskip-v4"

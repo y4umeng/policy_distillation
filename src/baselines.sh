@@ -1,5 +1,6 @@
 python tools/train.py --cfg configs/BeamRiderNoFrameskip-v4/dqn5.yaml
 python tools/train.py --cfg configs/BeamRiderNoFrameskip-v4/dqn5.yaml
+python tools/train.py --cfg configs/BeamRiderNoFrameskip-v4/dqn5.yaml
 
 python tools/train.py --cfg configs/MsPacmanNoFrameskip-v4/dqn5.yaml
 python tools/train.py --cfg configs/MsPacmanNoFrameskip-v4/dqn5.yaml
