@@ -3,8 +3,8 @@ EXPERIMENT:
   TAG: "breakout, dqn, DA"
   PROJECT: "policy_distillation_small_dqn"
 LOG:
-  WANDB: False
-  BAR: True
+  WANDB: True
+  BAR: False
 DISTILLER:
   TYPE: "DA"
   STUDENT: "dqn5"

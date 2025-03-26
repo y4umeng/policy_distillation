@@ -9,3 +9,6 @@ DISTILLER:
   TYPE: "DA"
   STUDENT: "dqn6"
   ENV: "SpaceInvadersNoFrameskip-v4"
+DA:
+  LR: 0.001
+  PROB: 0.3
