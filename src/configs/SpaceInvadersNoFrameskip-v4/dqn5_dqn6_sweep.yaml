@@ -1,0 +1,18 @@
+EXPERIMENT:
+  NAME: "dqn5_dqn6_da_spaceinvaders"
+  TAG: "spaceinvaders, dqn, DA"
+  PROJECT: "policy_distillation_sweeps"
+LOG:
+  WANDB: True
+  BAR: False
+  EVAL_EPISODES: 10
+DISTILLER:
+  TYPE: "DA"
+  TEACHER: "dqn5"
+  STUDENT: "dqn6"
+  ENV: "SpaceInvadersNoFrameskip-v4"
+SOLVER:
+  EPOCHS: 100
+DA:
+  LR: 0.001
+  PROB: 0.3
