@@ -29,7 +29,7 @@ if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser("Hyperparameter sweep for policy distillation")
     parser.add_argument("--config", type=str, required=True, help="Path to the configuration file")
-    parser.add_argument("--count", type=int, default=50, help="Number of sweep runs to perform")
+    parser.add_argument("--count", type=int, default=100, help="Number of sweep runs to perform")
     parser.add_argument("--project", type=str, default="policy_distillation_sweeps", help="Wandb project name")
     args = parser.parse_args()
     

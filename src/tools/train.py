@@ -54,6 +54,8 @@ def main(cfg, resume, opts):
 
 
 if __name__ == "__main__":
+    raise ValueError("SKIPPING")
+
     import argparse
 
     parser = argparse.ArgumentParser("training for knowledge distillation.")

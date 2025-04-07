@@ -5,7 +5,7 @@ from .PD import PD
 import copy
 
 
-class DA(PD):    
+class DA_MSE(PD):    
     def DA(self, images):
         fake_student = copy.deepcopy(self.student)
         images.requires_grad = True
@@ -13,9 +13,7 @@ class DA(PD):
         for _ in range(self.cfg.DA.EPOCHS):
             logits_student = fake_student(images)
             logits_teacher = self.teacher(images)
-            loss = -1 * self.kld_with_temp(
-                        logits_student, logits_teacher, 1.0
-                    )
+            loss = -1 * F.mse_loss(logits_student, logits_teacher)
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
