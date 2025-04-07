@@ -1,0 +1,14 @@
+EXPERIMENT:
+  NAME: "dqn_dqn6_da_beamrider"
+  TAG: "breakout, dqn, DA"
+  PROJECT: "policy_distillation_small_dqn"
+LOG:
+  WANDB: True
+  BAR: False
+DISTILLER:
+  TYPE: "DA"
+  STUDENT: "dqn6"
+  ENV: "BeamRiderNoFrameskip-v4"
+DA:
+  LR: 0.001
+  PROB: 0.3

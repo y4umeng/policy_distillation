@@ -1,5 +1,5 @@
 EXPERIMENT:
-  NAME: "dqn_dqn5_pd"
+  NAME: "dqn_dqn6_pd_breakout"
   TAG: "breakout, dqn, PD"
   PROJECT: "policy_distillation_small_dqn"
 LOG:
@@ -7,4 +7,4 @@ LOG:
   BAR: False
 DISTILLER:
   TYPE: "PD"
-  STUDENT: "dqn5"
+  STUDENT: "dqn6"

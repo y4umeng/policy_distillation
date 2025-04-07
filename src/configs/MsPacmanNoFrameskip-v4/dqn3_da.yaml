@@ -1,11 +1,14 @@
 EXPERIMENT:
-  NAME: "dqn_dqn4_pd_mspacman"
-  TAG: "breakout, dqn, PD"
+  NAME: "dqn_dqn3_da_mspacman"
+  TAG: "breakout, dqn, DA"
   PROJECT: "policy_distillation_small_dqn"
 LOG:
   WANDB: True
   BAR: False
 DISTILLER:
-  TYPE: "PD"
-  STUDENT: "dqn4"
+  TYPE: "DA"
+  STUDENT: "dqn3"
   ENV: "MsPacmanNoFrameskip-v4"
+DA:
+  LR: 0.001
+  PROB: 0.3
