@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # Define the sweep configuration
     sweep_configuration = {
         "method": "bayes",
-        "metric": {"goal": "maximize", "name": "test_score"},
+        "metric": {"goal": "maximize", "name": "best_score"},
         "parameters": {
             "lr": {"max": 0.01, "min": 0.00001, "distribution": "log_uniform_values"},
             "prob": {"max": 0.9, "min": 0.1}
