@@ -71,6 +71,9 @@ class BaseTrainer(object):
             wandb.log(log_dict)
 
     def generate_data(self, num_data_points):
+        if not self.cfg.DATA.INCREMENT and len(self.replay_buffer.buffer) == self.replay_buffer.capacity:
+            return 0.0
+
         self.distiller.teacher.eval()
         state, _ = self.env.reset()
         collected = 0
@@ -148,7 +151,10 @@ class BaseTrainer(object):
 
         num_iter = ceil(len(self.replay_buffer)/self.cfg.SOLVER.BATCH_SIZE)
 
-        generatation_time = self.generate_data(self.cfg.DATA.INCREMENT_SIZE)
+        if self.cfg.DATA.INCREMENT:
+            generatation_time = self.generate_data(self.cfg.DATA.INCREMENT_SIZE)
+        else:
+            generatation_time = self.generate_data(self.cfg.DATA.MAX_CAPACITY)
 
         data_loader = DataLoader(
             self.replay_buffer,
