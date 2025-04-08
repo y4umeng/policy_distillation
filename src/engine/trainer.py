@@ -137,7 +137,50 @@ class BaseTrainer(object):
         while epoch < self.cfg.SOLVER.EPOCHS + 1:
             self.train_epoch(epoch)
             epoch += 1
-        print(log_msg("Best score:{}".format(self.best_score), "EVAL"))
+
+            print(log_msg("Training completed. Best score during training: {}".format(self.best_score), "EVAL"))
+        
+        # Load the best student model for final evaluation
+        print(log_msg("Loading best student model for final evaluation...", "EVAL"))
+
+        if self.cfg.LOG.FINAL_EVAL_EPS:
+            best_student_path = os.path.join(self.log_path, "student_best")
+            
+            try:
+                # Load the best student model state
+                best_student_state = load_checkpoint(best_student_path)
+                self.distiller.student.load_state_dict(best_student_state["model"])
+                
+                # Run a comprehensive validation over 1000 episodes using the best model
+                print(log_msg("Running final evaluation over 1000 episodes with best model...", "EVAL"))
+                start_time = time.time()
+                final_score = validate(self.distiller, self.env, num_episodes=self.cfg.LOG.FINAL_EVAL_EPS, bar=self.cfg.LOG.BAR)
+                eval_time = time.time() - start_time
+                
+                # Log the final validation results
+                print(log_msg(f"Final score over 1000 episodes: {final_score}", "EVAL"))
+                print(log_msg(f"Average score per episode: {final_score/1000:.2f}", "EVAL"))
+                print(log_msg(f"Evaluation time: {eval_time:.2f} seconds", "EVAL"))
+                print(log_msg(f"Best score during training: {self.best_score}", "EVAL"))
+                
+                # Log to wandb if enabled
+                if self.cfg.LOG.WANDB:
+                    wandb.log({
+                        "final_evaluation/total_score": final_score,
+                        "final_evaluation/avg_score": final_score/1000,
+                        "final_evaluation/eval_time": eval_time,
+                        "final_evaluation/episodes": 1000,
+                        "final_evaluation/model": "best_student"
+                    })
+                    wandb.run.summary["final_score"] = final_score
+                    wandb.run.summary["final_avg_score"] = final_score/1000
+            
+            except Exception as e:
+                print(log_msg(f"Error during final evaluation: {str(e)}", "EVAL"))
+        
+        return
+
+
 
     def train_epoch(self, epoch):
         lr = adjust_learning_rate(epoch, self.cfg, self.optimizer)

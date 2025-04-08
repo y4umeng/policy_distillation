@@ -21,6 +21,7 @@ def run_sweep():
     # Update configuration with wandb sweep parameters
     cfg.DA.LR = wandb.config.lr
     cfg.DA.PROB = wandb.config.prob
+    cfg.LOG.FINAL_EVAL_EPS = 0
     
     # Train with the updated configuration
     main(cfg, False, [])
