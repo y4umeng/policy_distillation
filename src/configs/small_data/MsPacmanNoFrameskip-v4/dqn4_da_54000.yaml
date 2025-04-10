@@ -1,0 +1,14 @@
+EXPERIMENT:
+  NAME: "dqn_dqn4_da_mspacman_54000"
+  TAG: "mspacman, dqn, DA, 54000"
+  PROJECT: "policy_distillation_less_data"
+LOG:
+  WANDB: True
+  BAR: False
+DISTILLER:
+  TYPE: "DA"
+  STUDENT: "dqn4"
+  ENV: "MsPacmanNoFrameskip-v4"
+DATA:
+  INCREMENT: False
+  MAX_CAPACITY: 54000
