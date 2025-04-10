@@ -69,28 +69,8 @@ cd policy-distillation
 Install the required Python packages:
 
 ```bash
-pip install -r requirements.txt
+./setup.sh
 ```
-
-### 3. Install Atari ROMs
-
-For Atari environments, install the Arcade Learning Environment (ALE) ROMs using AutoROM:
-
-```bash
-pip install autorom
-AutoROM --accept-license
-```
-
-### 4. Set Up the Package (Optional)
-
-For development, install the package locally:
-
-```bash
-sudo python3 setup.py develop
-pip install -e .
-```
-
----
 
 ## Usage
 
