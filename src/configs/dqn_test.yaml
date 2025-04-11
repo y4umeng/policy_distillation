@@ -5,8 +5,11 @@ EXPERIMENT:
 LOG:
   WANDB: False
   BAR: True
+  FINAL_EVAL_EPS: 10
 DISTILLER:
   TYPE: "DA"
-  ENV: "BeamRiderNoFrameskip-v4"
-# DATA:
-#   INCREMENT_SIZE: 1000
+  ENV: "SpaceInvadersNoFrameskip-v4"
+SOLVER:
+  EPOCHS: 1
+DATA:
+  INCREMENT_SIZE: 1000

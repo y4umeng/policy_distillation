@@ -1,0 +1,10 @@
+EXPERIMENT:
+  NAME: "dqn_SWEEP"
+  TAG: "dqn, sweep"
+  PROJECT: "small_data_auto_sweep"
+LOG:
+  WANDB: True
+  BAR: False
+DISTILLER:
+  TYPE: "DA"
+  ENV: "MsPacmanNoFrameskip-v4"
