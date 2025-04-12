@@ -5,6 +5,7 @@ EXPERIMENT:
 LOG:
   WANDB: True
   BAR: False
+  EVAL_EPISODES: 0
 DISTILLER:
   TYPE: "DA"
   ENV: "MsPacmanNoFrameskip-v4"
