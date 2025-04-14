@@ -16,7 +16,7 @@ def generate_data_sizes(subset="medium"):
     if subset == "small":
         return [100, 10000]
     elif subset == "medium":
-        return [1, 10, 100, 1000, 10000, 100000]
+        return [1, 10, 100, 1000, 10000]
     elif subset == "large":
         return [1, 10, 100, 1000, 5000, 10000, 50000, 100000]
     else:  # all
