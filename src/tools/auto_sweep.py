@@ -19,6 +19,8 @@ def generate_data_sizes(subset="medium"):
         return [1, 10, 100, 1000, 10000]
     elif subset == "large":
         return [1, 10, 100, 1000, 5000, 10000, 50000, 100000]
+    elif subset == "extras":
+        return [500, 5000, 25000, 50000]
     else:  # all
         sizes = []
         # Powers of 10
@@ -33,7 +35,7 @@ def generate_learning_rates(subset="medium"):
     """Generate learning rates based on the specified subset size"""
     if subset == "small":
         return [0, 0.1, 0.001, 0.00001]
-    elif subset == "medium":
+    elif subset == "medium" or subset == "extras":
         return [0, 0.5, 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]
     elif subset == "large":
         return [0, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001, 
@@ -80,7 +82,7 @@ def run_wandb_sweep():
     parser = argparse.ArgumentParser("WandB Sweep for policy distillation")
     parser.add_argument("--config", type=str, required=True, help="Path to the configuration file")
     parser.add_argument("--subset", type=str, choices=["small", "medium", "large", "all"], 
-                        default="medium", help="Size of parameter sweep")
+                        default="extras", help="Size of parameter sweep")
     parser.add_argument("--envs", type=str, nargs="+", default=["MsPacmanNoFrameskip-v4"],
                         help="Environments to test")
     parser.add_argument("--students", type=str, nargs="+", default=["dqn4"],
