@@ -128,7 +128,7 @@ def run_wandb_sweep():
     sweep_config = {
         "method": "grid",  # Using grid to ensure we try all combinations
         "metric": {
-            "name": "best_score",
+            "name": "final_evaluation/avg_score",
             "goal": "maximize"
         },
         "parameters": {
